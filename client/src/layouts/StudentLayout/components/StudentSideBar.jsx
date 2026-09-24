@@ -81,6 +81,7 @@ export default function StudentSideBar({
   logout,
   sidebarOpen,
   setSidebarOpen,
+  sessionCount = 0,
 }) {
   return (
     <>
@@ -153,7 +154,7 @@ export default function StudentSideBar({
               <div>
                 <p className="text-xs uppercase text-slate-500">Sessions</p>
 
-                <p className="text-white font-semibold">28</p>
+                <p className="text-white font-semibold">{sessionCount}</p>
               </div>
             </div>
           </div>

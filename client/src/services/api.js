@@ -18,15 +18,37 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Global response interceptor to handle expired/invalid tokens
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    const status = err?.response?.status;
+    if (status === 401) {
+      // clear stored auth and notify app
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new CustomEvent("authExpired"));
+    }
+    return Promise.reject(err);
+  },
+);
+
 // Auth APIs
 export const authAPI = {
   signup: (data) => api.post("/user/signup", data),
   login: (data) => api.post("/user/login", data),
+  forgotPassword: (email) => api.post("/user/forgot-password", { email }),
+  verifyEmail: (email, code) => api.post("/user/verify-email", { email, code }),
+  resetPassword: (email, code, newPassword) =>
+    api.post("/user/reset-password", { email, code, newPassword }),
+  resendVerification: (email) =>
+    api.post("/user/resend-verification", { email }),
 };
 
 // User APIs
 export const userAPI = {
   getAll: () => api.get("/user"),
+  getTutors: () => api.get("/user/tutors"),
   getById: (id) => api.get(`/user/${id}`),
   update: (id, data) => api.put(`/user/${id}`, data),
   delete: (id) => api.delete(`/user/${id}`),
@@ -53,26 +75,34 @@ export const userAPI = {
 };
 
 // Booking APIs
+
 export const bookingAPI = {
-  // Get all bookings for the logged-in user
-  getMyBookings: () => api.get("/booking/my-bookings"),
+  createBooking: (data) => api.post("/bookings", data),
 
-  // Cancel booking
-  cancelBooking: (id, reason) =>
-    api.put(`/booking/${id}/cancel`, { reason }),
+  getMyBookings: () => api.get("/bookings/my-bookings"),
 
-  // Confirm lesson
-  confirmLesson: (id) =>
-    api.put(`/booking/${id}/confirm`),
+  getBookingById: (id) => api.get(`/bookings/${id}`),
 
-  // Submit dispute
-  disputeLesson: (id, reason) =>
-    api.put(`/booking/${id}/dispute`, { reason }),
+  cancelBooking: (id, reason) => api.put(`/bookings/${id}/cancel`, { reason }),
 
-  // Submit review
-  submitReview: (data) =>
-    api.post("/review", data),
+  confirmLesson: (id) => api.put(`/bookings/${id}/confirm`),
+
+  rateBooking: (id, data) => api.put(`/bookings/${id}/rate`, data),
+
+  disputeLesson: (id, reason) => api.put(`/bookings/${id}/dispute`, { reason }),
+
+  approveBooking: (id) => api.put(`/bookings/${id}/approve`),
+
+  addMeetingLink: (id, meetingLink) =>
+    api.put(`/bookings/${id}/meeting-link`, { meetingLink }),
 };
 
+// (notifications API removed — student-specific page will use existing endpoints directly)
+
+export const paymentAPI = {
+  initializePayment: (data) => api.post("/payments/initialize", data),
+
+  verifyPayment: (reference) => api.get(`/payments/verify/${reference}`),
+};
 
 export default api;

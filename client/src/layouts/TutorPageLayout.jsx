@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Menu,
   X,
@@ -18,9 +18,11 @@ import {
   GraduationCap,
   ChevronRight,
 } from "lucide-react";
+import RefreshButton from "../components/RefreshButton";
 
 import { useAuth } from "../context/AuthContext";
 import { useNotificationBell } from "../hooks/useNotificationBell";
+import { bookingAPI } from "../services/api";
 import { getAvatarUrl } from "../types";
 
 const navItems = [
@@ -110,6 +112,63 @@ export default function TutorLayout() {
   const avatarUrl = getAvatarUrl(user);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [studentCount, setStudentCount] = useState(0);
+  const [avgRating, setAvgRating] = useState("0.0");
+
+  useEffect(() => {
+    const fetchTutorStats = async () => {
+      if (!user) return;
+
+      try {
+        const res = await bookingAPI.getMyBookings();
+        const tutorBookings = (res.data?.bookings || []).filter((booking) => {
+          const tutorId = booking.tutor?._id || booking.tutor;
+          const userId = user?.id || user?._id;
+          return tutorId && userId && tutorId.toString() === userId.toString();
+        });
+
+        const uniqueStudents = new Set(
+          tutorBookings
+            .map((booking) => booking.student?._id || booking.student)
+            .filter(Boolean)
+            .map((id) => id.toString()),
+        ).size;
+
+        const ratedBookings = tutorBookings.filter(
+          (booking) => booking.isReviewed && Number(booking.rating) >= 1,
+        );
+
+        const ratingValue =
+          ratedBookings.length > 0
+            ? (
+                ratedBookings.reduce(
+                  (sum, booking) => sum + Number(booking.rating || 0),
+                  0,
+                ) / ratedBookings.length
+              ).toFixed(1)
+            : "0.0";
+
+        setStudentCount(uniqueStudents);
+        setAvgRating(ratingValue);
+      } catch (error) {
+        console.error("Failed to load tutor stats", error);
+      }
+    };
+
+    const onManual = async () => {
+      window.dispatchEvent(new CustomEvent("manualRefreshStart"));
+      await fetchTutorStats();
+      window.dispatchEvent(new CustomEvent("manualRefreshEnd"));
+    };
+
+    window.addEventListener("manualRefresh", onManual);
+    window.addEventListener("notificationReceived", onManual);
+
+    return () => {
+      window.removeEventListener("manualRefresh", onManual);
+      window.removeEventListener("notificationReceived", onManual);
+    };
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -134,61 +193,59 @@ export default function TutorLayout() {
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        {/* Logo */}
-
-        <div className="px-7 py-7 border-b border-slate-200 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 flex items-center justify-center shadow-lg">
-              <GraduationCap className="text-white w-8 h-8" />
-            </div>
-
-            <div>
-              <h1 className="font-black text-2xl text-slate-900">TutorLink</h1>
-
-              <p className="text-sm text-slate-500">Tutor Workspace</p>
-            </div>
-          </div>
-
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
-            <X size={24} />
-          </button>
-        </div>
-
-        {/* User Card */}
-
-        <div className="p-6">
-          <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 shadow-xl">
+        <div className="px-7 py-7 border-b border-slate-200">
+          <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
-              <img
-                src={avatarUrl}
-                alt={user?.name}
-                className="w-16 h-16 rounded-2xl object-cover border-4 border-white/20"
-              />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 flex items-center justify-center shadow-lg">
+                <GraduationCap className="text-white w-8 h-8" />
+              </div>
 
               <div>
-                <h2 className="font-bold text-white text-lg">{user?.name}</h2>
-
-                <p className="text-blue-300 text-sm">Professional Tutor</p>
+                <h1 className="font-black text-2xl text-slate-900">
+                  TutorLink
+                </h1>
+                <p className="text-sm text-slate-500">Tutor Workspace</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mt-6">
-              <div className="bg-white/10 rounded-2xl p-3">
-                <p className="text-xs text-slate-400 uppercase">Students</p>
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden">
+              <X size={24} />
+            </button>
+          </div>
 
-                <h3 className="text-white text-xl font-bold">24</h3>
-              </div>
+          <div className="mt-6 flex items-center gap-4">
+            <div className="hidden lg:block">
+              <RefreshButton />
+            </div>
 
-              <div className="bg-white/10 rounded-2xl p-3">
-                <p className="text-xs text-slate-400 uppercase">Rating</p>
+            <img
+              src={avatarUrl}
+              alt={user?.name}
+              className="w-16 h-16 rounded-2xl object-cover border-4 border-white/20"
+            />
 
-                <h3 className="text-yellow-400 text-xl font-bold">4.9★</h3>
-              </div>
+            <div>
+              <h2 className="font-bold text-slate-900 text-lg">{user?.name}</h2>
+              <p className="text-slate-500 text-sm">Professional Tutor</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mt-6">
+            <div className="bg-white/10 rounded-2xl p-3">
+              <p className="text-xs text-slate-400 uppercase">Students</p>
+              <h3 className="text-slate-900 text-xl font-bold">
+                {studentCount}
+              </h3>
+            </div>
+
+            <div className="bg-white/10 rounded-2xl p-3">
+              <p className="text-xs text-slate-400 uppercase">Rating</p>
+              <h3 className="text-yellow-400 text-xl font-bold">
+                {avgRating}★
+              </h3>
             </div>
           </div>
         </div>
-
-        {/* Navigation */}
 
         <div className="flex-1 overflow-y-auto px-4 space-y-2">
           {navItems.map((item) => (
@@ -206,16 +263,12 @@ export default function TutorLayout() {
             >
               <div className="flex items-center gap-4">
                 {item.icon}
-
                 <span className="font-semibold">{item.label}</span>
               </div>
-
               <ChevronRight size={18} />
             </NavLink>
           ))}
         </div>
-
-        {/* Logout */}
 
         <div className="p-5 border-t border-slate-200">
           <button
@@ -260,6 +313,8 @@ export default function TutorLayout() {
             {/* Right */}
 
             <div className="flex items-center gap-4">
+              {/* Refresh button */}
+              <RefreshButton />
               {/* Search */}
 
               <div className="hidden md:flex items-center bg-slate-100 rounded-2xl px-4 py-3 w-80">
@@ -329,7 +384,6 @@ export default function TutorLayout() {
                 <span className="text-[11px] font-semibold">{item.label}</span>
               </>
             )}
-            ;<span className="text-[11px] font-semibold">{item.label}</span>
           </NavLink>
         ))}
       </nav>

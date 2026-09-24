@@ -1,10 +1,73 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import { NavLink, useNavigate } from "react-router-dom";
+import { bookingAPI } from "../../services/api";
 
 const StudentDashboardPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const res = await bookingAPI.getMyBookings();
+        setBookings(res.data.bookings || []);
+      } catch (error) {
+        console.error("Failed to fetch student bookings", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, []);
+
+  const upcomingBookings = bookings.filter((booking) =>
+    [
+      "confirmed",
+      "awaiting_link",
+      "link_sent",
+      "pending_payment",
+      "pending_approval",
+      "awaiting_confirmation",
+    ].includes(booking.status),
+  );
+
+  const completedBookings = bookings.filter(
+    (booking) => booking.status === "completed",
+  );
+
+  const uniqueTutors = new Set(
+    bookings
+      .map((booking) => booking.tutor?._id || booking.tutor)
+      .filter(Boolean)
+      .map((id) => id.toString()),
+  ).size;
+
+  const needsAction = bookings.filter((booking) =>
+    ["pending_approval", "awaiting_confirmation", "link_sent"].includes(
+      booking.status,
+    ),
+  ).length;
+
+  const weeklyGoal = Math.min(
+    100,
+    Math.round(
+      ((upcomingBookings.length + completedBookings.length) / 8) * 100,
+    ),
+  );
+  const weeklyGoalText = `${Math.min(upcomingBookings.length + completedBookings.length, 8)} / 8 Lessons`;
+
+  const recentBookings = bookings
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date),
+    )
+    .slice(0, 5);
 
   return (
     <div>
@@ -56,7 +119,9 @@ const StudentDashboardPage = () => {
             <div className="rounded-3xl bg-white/10 backdrop-blur-xl p-6">
               <p className="text-sm text-slate-300">Upcoming</p>
 
-              <h2 className="mt-3 text-4xl font-black">08</h2>
+              <h2 className="mt-3 text-4xl font-black">
+                {loading ? "..." : upcomingBookings.length}
+              </h2>
 
               <p className="text-cyan-300 text-sm mt-2">Lessons</p>
             </div>
@@ -64,7 +129,9 @@ const StudentDashboardPage = () => {
             <div className="rounded-3xl bg-white/10 backdrop-blur-xl p-6">
               <p className="text-sm text-slate-300">Completed</p>
 
-              <h2 className="mt-3 text-4xl font-black">42</h2>
+              <h2 className="mt-3 text-4xl font-black">
+                {loading ? "..." : completedBookings.length}
+              </h2>
 
               <p className="text-green-300 text-sm mt-2">Sessions</p>
             </div>
@@ -73,13 +140,16 @@ const StudentDashboardPage = () => {
               <p className="text-sm text-slate-300">Weekly Goal</p>
 
               <div className="mt-5 h-3 rounded-full bg-white/20 overflow-hidden">
-                <div className="w-[75%] h-full bg-cyan-400 rounded-full" />
+                <div
+                  className="h-full bg-cyan-400 rounded-full"
+                  style={{ width: `${weeklyGoal}%` }}
+                />
               </div>
 
               <div className="mt-3 flex justify-between text-sm">
-                <span>75%</span>
+                <span>{weeklyGoal}%</span>
 
-                <span>6 / 8 Lessons</span>
+                <span>{loading ? "..." : weeklyGoalText}</span>
               </div>
             </div>
           </div>
@@ -90,22 +160,22 @@ const StudentDashboardPage = () => {
         {[
           {
             title: "Upcoming Lessons",
-            value: 8,
+            value: loading ? "..." : upcomingBookings.length,
             color: "bg-blue-500",
           },
           {
             title: "Completed",
-            value: 42,
+            value: loading ? "..." : completedBookings.length,
             color: "bg-green-500",
           },
           {
-            title: "Saved Tutors",
-            value: 14,
+            title: "Tutors Booked",
+            value: loading ? "..." : uniqueTutors,
             color: "bg-pink-500",
           },
           {
-            title: "Notifications",
-            value: 5,
+            title: "Needs Action",
+            value: loading ? "..." : needsAction,
             color: "bg-orange-500",
           },
         ].map((item) => (
@@ -145,61 +215,85 @@ const StudentDashboardPage = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          {[1, 2].map((item) => (
-            <div
-              key={item}
-              className="group relative overflow-hidden rounded-[30px] bg-white border border-slate-200 p-7 hover:shadow-2xl transition-all duration-300"
-            >
-              {/* Decorative Shape */}
+          {loading ? (
+            <div className="col-span-2 text-center py-10 text-slate-500">
+              Loading upcoming sessions...
+            </div>
+          ) : upcomingBookings.length === 0 ? (
+            <div className="col-span-2 bg-white rounded-[30px] border border-slate-200 p-7 text-center text-slate-500">
+              You do not have any upcoming lessons yet.
+            </div>
+          ) : (
+            upcomingBookings.slice(0, 2).map((booking) => (
+              <div
+                key={booking._id}
+                className="group relative overflow-hidden rounded-[30px] bg-white border border-slate-200 p-7 hover:shadow-2xl transition-all duration-300"
+              >
+                <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-blue-100 group-hover:scale-125 transition duration-500" />
 
-              <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-blue-100 group-hover:scale-125 transition duration-500" />
+                <div className="relative z-10">
+                  <div className="flex justify-between items-center">
+                    <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase">
+                      {booking.status.replaceAll("_", " ")}
+                    </span>
 
-              <div className="relative z-10">
-                <div className="flex justify-between items-center">
-                  <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-                    CONFIRMED
-                  </span>
+                    <span className="text-sm text-slate-500">
+                      {booking.date} • {booking.time}
+                    </span>
+                  </div>
 
-                  <span className="text-sm text-slate-500">
-                    Tomorrow • 10:00 AM
-                  </span>
-                </div>
+                  <h3 className="mt-8 text-3xl font-black text-slate-800">
+                    {booking.subject}
+                  </h3>
 
-                <h3 className="mt-8 text-3xl font-black text-slate-800">
-                  Mathematics
-                </h3>
+                  <p className="mt-2 text-slate-500">{booking.type} lesson</p>
 
-                <p className="mt-2 text-slate-500">
-                  Algebra & Linear Equations
-                </p>
+                  <div className="flex items-center gap-4 mt-8">
+                    <img
+                      src={
+                        booking.tutor?.avatar ||
+                        `https://i.pravatar.cc/100?u=${booking.tutor?._id || booking.tutor}`
+                      }
+                      className="w-14 h-14 rounded-2xl object-cover"
+                      alt={booking.tutor?.name || "Tutor"}
+                    />
 
-                <div className="flex items-center gap-4 mt-8">
-                  <img
-                    src="https://i.pravatar.cc/100?img=12"
-                    className="w-14 h-14 rounded-2xl object-cover"
-                  />
+                    <div>
+                      <h4 className="font-bold text-slate-700">
+                        {booking.tutor?.name || "Tutor"}
+                      </h4>
 
-                  <div>
-                    <h4 className="font-bold text-slate-700">David Johnson</h4>
+                      <p className="text-sm text-slate-500">Tutor</p>
+                    </div>
+                  </div>
 
-                    <p className="text-sm text-slate-500">
-                      Senior Mathematics Tutor
-                    </p>
+                  <div className="flex gap-4 mt-8">
+                    {booking.status === "link_sent" ? (
+                      <a
+                        href={booking.meetingLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex-1 rounded-2xl bg-blue-600 text-center text-white py-4 font-bold hover:bg-blue-700 transition"
+                      >
+                        Join Class
+                      </a>
+                    ) : (
+                      <button className="flex-1 rounded-2xl bg-blue-600 text-white py-4 font-bold hover:bg-blue-700 transition">
+                        View Booking
+                      </button>
+                    )}
+
+                    <Link
+                      to="/student/bookings"
+                      className="px-6 rounded-2xl border border-slate-200 hover:bg-slate-100 transition flex items-center justify-center"
+                    >
+                      Details
+                    </Link>
                   </div>
                 </div>
-
-                <div className="flex gap-4 mt-8">
-                  <button className="flex-1 rounded-2xl bg-blue-600 text-white py-4 font-bold hover:bg-blue-700 transition">
-                    Join Class
-                  </button>
-
-                  <button className="px-6 rounded-2xl border border-slate-200 hover:bg-slate-100 transition">
-                    Details
-                  </button>
-                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
@@ -344,27 +438,53 @@ const StudentDashboardPage = () => {
         </div>
 
         <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((item) => (
-            <div
-              key={item}
-              className="bg-white rounded-[28px] border border-slate-200 p-7 text-center hover:-translate-y-2 transition"
-            >
-              <img
-                src={`https://i.pravatar.cc/200?img=${item + 10}`}
-                className="w-24 h-24 rounded-3xl object-cover mx-auto"
-              />
-
-              <h3 className="mt-6 text-xl font-bold text-slate-800">
-                David Johnson
-              </h3>
-
-              <p className="text-slate-500 mt-2">Mathematics Tutor</p>
-
-              <button className="mt-6 w-full rounded-2xl bg-slate-900 text-white py-3 hover:bg-blue-600 transition">
-                View Profile
-              </button>
+          {recentBookings.length === 0 ? (
+            <div className="md:col-span-2 xl:col-span-4 bg-white rounded-[28px] border border-slate-200 p-7 text-center text-slate-500">
+              No recent tutors yet.
             </div>
-          ))}
+          ) : (
+            [
+              ...new Map(
+                recentBookings
+                  .filter((booking) => booking.tutor)
+                  .map((booking) => [
+                    booking.tutor?._id || booking.tutor,
+                    booking,
+                  ]),
+              ).values(),
+            ]
+              .slice(0, 4)
+              .map((booking) => (
+                <div
+                  key={booking.tutor?._id || booking.tutor}
+                  className="bg-white rounded-[28px] border border-slate-200 p-7 text-center hover:-translate-y-2 transition"
+                >
+                  <img
+                    src={
+                      booking.tutor?.avatar ||
+                      `https://i.pravatar.cc/200?u=${booking.tutor?._id || booking.tutor}`
+                    }
+                    className="w-24 h-24 rounded-3xl object-cover mx-auto"
+                    alt={booking.tutor?.name || "Tutor"}
+                  />
+
+                  <h3 className="mt-6 text-xl font-bold text-slate-800">
+                    {booking.tutor?.name || "Tutor"}
+                  </h3>
+
+                  <p className="text-slate-500 mt-2">
+                    {booking.subject || "Tutor"}
+                  </p>
+
+                  <Link
+                    to={`/tutors/${booking.tutor?._id || booking.tutor}`}
+                    className="mt-6 block w-full rounded-2xl bg-slate-900 text-white py-3 hover:bg-blue-600 transition text-center"
+                  >
+                    View Profile
+                  </Link>
+                </div>
+              ))
+          )}
         </div>
       </section>
 
@@ -424,24 +544,37 @@ const StudentDashboardPage = () => {
             </thead>
 
             <tbody>
-              {[1, 2, 3, 4].map((item) => (
-                <tr
-                  key={item}
-                  className="border-b last:border-none hover:bg-slate-50"
-                >
-                  <td className="px-8 py-6">David Johnson</td>
-
-                  <td className="px-8 py-6">Mathematics</td>
-
-                  <td className="px-8 py-6">Jul 5, 2026</td>
-
-                  <td className="px-8 py-6">
-                    <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
-                      Completed
-                    </span>
+              {recentBookings.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-8 py-6 text-center text-slate-500"
+                  >
+                    No recent activity yet.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentBookings.map((booking) => (
+                  <tr
+                    key={booking._id}
+                    className="border-b last:border-none hover:bg-slate-50"
+                  >
+                    <td className="px-8 py-6">
+                      {booking.tutor?.name || "Tutor"}
+                    </td>
+
+                    <td className="px-8 py-6">{booking.subject}</td>
+
+                    <td className="px-8 py-6">{booking.date || "N/A"}</td>
+
+                    <td className="px-8 py-6">
+                      <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                        {booking.status.replaceAll("_", " ")}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

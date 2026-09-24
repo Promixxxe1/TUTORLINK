@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Menu, Search, Bell } from "lucide-react";
+import RefreshButton from "../../../components/RefreshButton";
 
 export default function StudentHeader({
   user,
@@ -22,11 +23,8 @@ export default function StudentHeader({
             <Menu size={22} />
           </button>
 
-          <div>
-            <h1 className="text-2xl font-bold text-slate-800">
-              Student Portal
-            </h1>
-
+          <div className="hidden lg:flex flex-col">
+            <RefreshButton />
             <p className="text-sm text-slate-500">Welcome back, {user?.name}</p>
           </div>
         </div>
@@ -34,6 +32,8 @@ export default function StudentHeader({
         {/* Right Side */}
 
         <div className="flex items-center gap-3">
+          {/* Refresh button */}
+          <RefreshButton />
           {/* Search */}
 
           <div className="hidden md:flex items-center bg-slate-100 rounded-2xl px-4 py-3 w-80">

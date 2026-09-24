@@ -39,7 +39,7 @@ export default function LoginPage() {
         // Redirect based on role
         const user = response.data.user;
         if (user.role === "tutor") {
-          navigate("/tutor");
+          navigate("/tutor/dashboard");
         } else {
           navigate("/student/dashboard");
         }

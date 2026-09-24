@@ -60,6 +60,25 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    courses: [
+      {
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        description: {
+          type: String,
+          default: "",
+          trim: true,
+        },
+        pricePerHour: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+      },
+    ],
 
     notifications: {
       email: {

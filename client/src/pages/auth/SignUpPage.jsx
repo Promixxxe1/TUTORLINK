@@ -46,24 +46,12 @@ export default function SignupPage() {
 
       console.log("Signup Response:", response.data); // Debug log
 
-      // Save token and user data
-      // Save token and user data
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
-      // Update AuthContext immediately
-      setUser(response.data.user);
-
-      setSuccess("Account created successfully!");
+      setSuccess(
+        "Account created successfully! Check your email for the verification code.",
+      );
       setTimeout(() => {
-        // Redirect based on role
-        console.log("User role:", response.data.user.role); // Debug log
-        if (response.data.user.role === "tutor") {
-          navigate("/tutor");
-        } else {
-          navigate("/student/dashboard");
-        }
-      }, 1500);
+        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+      }, 1200);
     } catch (err) {
       console.error("Signup error:", err); // Debug log
       setError(err.response?.data?.message || "Registration failed");

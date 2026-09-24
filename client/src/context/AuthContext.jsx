@@ -16,6 +16,26 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    const onAuthExpired = () => {
+      setUser(null);
+      setLoading(false);
+    };
+
+    window.addEventListener("authExpired", onAuthExpired);
+    return () => window.removeEventListener("authExpired", onAuthExpired);
+  }, []);
+
+  useEffect(() => {
+    const onAuthExpired = () => {
+      setUser(null);
+      setLoading(false);
+    };
+
+    window.addEventListener("authExpired", onAuthExpired);
+    return () => window.removeEventListener("authExpired", onAuthExpired);
+  }, []);
+
   const logout = async () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");

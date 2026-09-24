@@ -1,22 +1,99 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdLockReset, MdMarkEmailRead } from "react-icons/md";
 import { BookOpen } from "lucide-react";
-
-
+import { authAPI } from "../../services/api";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const inputs = useRef([]);
+
+  const handleCodeChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return;
+
+    const nextCode = [...code];
+    nextCode[index] = value;
+    setCode(nextCode);
+
+    if (value && index < 5) {
+      inputs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleCodeKeyDown = (index, event) => {
+    if (event.key === "Backspace" && !code[index] && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleCodePaste = (event) => {
+    const pasted = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    if (pasted.length === 6) {
+      event.preventDefault();
+      setCode(pasted.split(""));
+      inputs.current[5]?.focus();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    setSent(true);
+
+    try {
+      await authAPI.forgotPassword(email);
+      setSent(true);
+      setCode(["", "", "", "", "", ""]);
+    } catch (error) {
+      console.error("Forgot password error:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleContinue = () => {
+    const fullCode = code.join("");
+
+    if (fullCode.length !== 6) {
+      alert("Please enter the 6-digit code sent to your email.");
+      return;
+    }
+
+    navigate(
+      `/reset-password?email=${encodeURIComponent(email)}&code=${encodeURIComponent(fullCode)}`,
+    );
+  };
+
+  const handleResend = async () => {
+    if (!email) return;
+
+    setLoading(true);
+    try {
+      await authAPI.forgotPassword(email);
+      setCode(["", "", "", "", "", ""]);
+      setSent(true);
+    } catch (error) {
+      console.error("Resend forgot password error:", error);
+      alert(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +123,7 @@ export default function ForgotPasswordPage() {
                 Forgot Password?
               </h2>
               <p className="text-gray-600 font-semibold text-sm">
-                Enter your email and we'll send you a reset link.
+                Enter your email and we'll send you a reset code.
               </p>
             </div>
 
@@ -72,7 +149,7 @@ export default function ForgotPasswordPage() {
                 {loading && (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 )}
-                {loading ? "Sending…" : "Send Reset Link"}
+                {loading ? "Sending…" : "Send Reset Code"}
               </button>
             </form>
           </>
@@ -86,19 +163,41 @@ export default function ForgotPasswordPage() {
             <h2 className="text-2xl font-bold text-primary mb-2">
               Check Your Email
             </h2>
-            <p className="text-slate-900 text-sm mb-8">
-              We sent a reset link to{" "}
+            <p className="text-slate-900 text-sm mb-6">
+              We sent a reset code to{" "}
               <span className="font-semibold text-primary">{email}</span>. It
-              expires in 1 hour.
+              expires in 10 minutes.
             </p>
+
+            <div className="mb-5" onPaste={handleCodePaste}>
+              <div className="flex gap-3 justify-center">
+                {code.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => {
+                      inputs.current[index] = el;
+                    }}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleCodeChange(index, e.target.value)}
+                    onKeyDown={(e) => handleCodeKeyDown(index, e)}
+                    className="w-12 h-14 text-center text-xl font-bold bg-white rounded-xl border-2 border-gray-200 focus:border-slate-500 focus:bg-white transition-all outline-none text-slate-600"
+                  />
+                ))}
+              </div>
+            </div>
+
             <button
-              onClick={() => navigate("/login")}
+              onClick={handleContinue}
               className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-primary-container transition-colors"
             >
-              Back to Login
+              Continue to Reset Password
             </button>
+
             <button
-              onClick={() => setSent(false)}
+              onClick={handleResend}
               className="mt-3 text-sm text-gray-600 font-semibold hover:underline"
             >
               Resend email

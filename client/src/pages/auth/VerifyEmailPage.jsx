@@ -2,14 +2,16 @@ import { useState, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { MdEmail } from "react-icons/md";
 import { BookOpen } from "lucide-react";
-
+import { authAPI } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
-  const userId = searchParams.get("userId") || "";
-  const email = searchParams.get("email") || "";
+  const initialEmail = searchParams.get("email") || "";
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
+  const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,24 +45,32 @@ export default function VerifyEmailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const full = code.join("");
+    if (!email) {
+      setError("Email is required.");
+      return;
+    }
     if (full.length < 6) {
       setError("Enter the 6-digit code");
       return;
     }
     setError("");
     setLoading(true);
+
     try {
-     
-      const { user, accessToken } = res.data;
-      localStorage.setItem("tutorlink_token", accessToken);
-      localStorage.setItem(
-        "tutorlink_user",
-        JSON.stringify({ ...user, id: user._id }),
-      );
-      const role = user.role;
-      if (role === "student") navigate("/student/onboarding");
-      else if (role === "tutor") navigate("/tutor/application-status");
-      else navigate("/admin/dashboard");
+      const response = await authAPI.verifyEmail(email, full);
+      const { token, user } = response.data;
+
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+
+      if (user.role === "student") {
+        navigate("/student/dashboard");
+      } else if (user.role === "tutor") {
+        navigate("/tutor/dashboard");
+      } else {
+        navigate("/login");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Invalid or expired code.");
     } finally {
@@ -70,11 +80,11 @@ export default function VerifyEmailPage() {
 
   const handleResend = async () => {
     try {
-      await authApi.resendVerification(email);
+      await authAPI.resendVerification(email);
       setResent(true);
       setTimeout(() => setResent(false), 5000);
-    } catch {
-      /* ignore */
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to resend code.");
     }
   };
 
@@ -112,6 +122,20 @@ export default function VerifyEmailPage() {
             {error}
           </div>
         )}
+
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-slate-700 mb-2">
+            Email
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-slate-700"
+          />
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex gap-3 justify-center" onPaste={handlePaste}>
             {code.map((digit, i) => (
