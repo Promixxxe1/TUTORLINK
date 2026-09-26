@@ -57,7 +57,7 @@ export default function StudentNotificationsPage() {
     const token = localStorage.getItem("authToken");
     try {
       const protocol = location.protocol === "https:" ? "https" : "http";
-      const host = "localhost:4000";
+     const host = "tutorlink-y59j.onrender.com";
       const url = `${protocol}://${host}/api/notifications/stream${token ? `?token=${token}` : ""}`;
       const es = new EventSource(url);
       wsRef.current = es;

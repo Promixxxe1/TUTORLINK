@@ -182,7 +182,7 @@ const HomePage = () => {
       {/**banner..................................... */}
       <section>
         <div className="bg-gray-300 p-5 sm:p-10 md:p-20 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-100 h-100 bg-gray-400 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <div className="hidden md:block absolute top-0 right-0 md:w-56 md:h-56 bg-gray-400 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-black mb-6">
             Ready to unlock your potential?
           </h2>
