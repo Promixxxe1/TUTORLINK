@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import transporter from "../config/Email.js";
 import emailService from "../utils/emailService.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -203,49 +202,8 @@ export const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    // Send reset code by email
-    await transporter.sendMail({
-      from: `"TutorLink" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: "TutorLink Password Reset Code",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e5e7eb; border-radius: 12px;">
-          
-          <h2 style="color: #334155;">
-            TutorLink Password Reset
-          </h2>
-
-          <p>Hello ${user.name},</p>
-
-          <p>
-            We received a request to reset your TutorLink password.
-          </p>
-
-          <p>
-            Your password reset code is:
-          </p>
-
-          <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #334155; margin: 25px 0;">
-            ${resetCode}
-          </div>
-
-          <p>
-            This code will expire in <strong>10 minutes</strong>.
-          </p>
-
-          <p>
-            If you did not request a password reset, you can safely ignore this email.
-          </p>
-
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
-
-          <p style="color: #64748b; font-size: 13px;">
-            © TutorLink
-          </p>
-
-        </div>
-      `,
-    });
+    // Send reset code by email via Resend
+    await emailService.sendPasswordResetEmail(user.email, resetCode, user.name);
 
     res.status(200).json({
       message: "Password reset code sent to your email.",

@@ -52,4 +52,49 @@ export async function sendVerificationEmail(to, code, name) {
   }
 }
 
-export default { sendVerificationEmail };
+export async function sendPasswordResetEmail(to, code, name) {
+  const fromEmail = process.env.EMAIL_FROM;
+  const fromName = process.env.EMAIL_FROM_NAME || "TutorLink";
+
+  if (!fromEmail) {
+    throw new Error("Missing EMAIL_FROM");
+  }
+
+  const subject = "TutorLink Password Reset Code";
+  const textBody = `Hello ${name || "user"},\n\nYour TutorLink password reset code is: ${code}\n\nThis code expires soon.\n\n— TutorLink`;
+  const htmlBody = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #0f172a;">
+      <h2 style="margin-bottom: 12px;">TutorLink Password Reset</h2>
+      <p>Hello ${name || "user"},</p>
+      <p>We received a request to reset your password.</p>
+      <p>Your reset code is:</p>
+      <div style="font-size: 32px; font-weight: 700; letter-spacing: 8px; margin: 20px 0;">${code}</div>
+      <p>This code expires soon. If you did not request a reset, you can ignore this email.</p>
+      <p style="margin-top: 20px; color: #475569;">— TutorLink</p>
+    </div>
+  `;
+
+  try {
+    const resend = getResendClient();
+    const response = await resend.emails.send({
+      from: `${fromName} <${fromEmail}>`,
+      to: [to],
+      subject,
+      text: textBody,
+      html: htmlBody,
+    });
+
+    if (!response || response.error) {
+      const errorMessage =
+        response?.error?.message || "Resend rejected the reset email request";
+      throw new Error(errorMessage);
+    }
+
+    return response;
+  } catch (error) {
+    const message = error?.message || "Password reset email delivery failed";
+    throw new Error(message);
+  }
+}
+
+export default { sendVerificationEmail, sendPasswordResetEmail };
