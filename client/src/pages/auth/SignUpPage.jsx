@@ -30,6 +30,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
+  const [emailExists, setEmailExists] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,8 +39,10 @@ export default function SignupPage() {
       return;
     }
 
-    setError("");
-    setLoading(true);
+   setError("");
+   setSuccess("");
+   setEmailExists(false);
+   setLoading(true);
 
     try {
       const response = await authAPI.signup({ name, email, password, role });
@@ -53,8 +56,16 @@ export default function SignupPage() {
         navigate(`/verify-email?email=${encodeURIComponent(email)}`);
       }, 1200);
     } catch (err) {
-      console.error("Signup error:", err); // Debug log
-      setError(err.response?.data?.message || "Registration failed");
+      console.error("Signup error:", err);
+
+      const responseData = err.response?.data;
+
+      if (responseData?.emailExists && responseData?.requiresLogin) {
+        setEmailExists(true);
+        setError(responseData.message);
+      } else {
+        setError(responseData?.message || "Registration failed");
+      }
     } finally {
       setLoading(false);
     }
@@ -97,8 +108,18 @@ export default function SignupPage() {
           </header>
 
           {error && (
-            <div className="mb-5 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
-              {error}
+            <div className="mb-5 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
+              <p>{error}</p>
+
+              {emailExists && (
+                <button
+                  type="button"
+                  onClick={() => navigate("/login")}
+                  className="mt-3 w-full py-2.5 bg-slate-700 text-white rounded-lg font-semibold hover:bg-slate-800 transition-colors"
+                >
+                  Go to Login
+                </button>
+              )}
             </div>
           )}
           {success && (

@@ -106,13 +106,28 @@ const HomePage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-10 m-5 sm:m-10 px-5 sm:px-10 lg:px-50 pb-10 sm:pb-20 lg:pb-30 mb-6 ">
           {features.map((feature, index) => {
             const getIcon = () => {
-              switch (feature.icon) {    
+              switch (feature.icon) {
                 case "shield":
-                  return <ShieldCheck size={50} className="mb-4 bg-gray-300 p-1 rounded-xl hover:text-black" />;
+                  return (
+                    <ShieldCheck
+                      size={50}
+                      className="mb-4 bg-gray-300 p-1 rounded-xl hover:text-black"
+                    />
+                  );
                 case "calendar":
-                  return <Calendar size={50} className="mb-4 bg-gray-300 p-1 rounded-xl" />;
+                  return (
+                    <Calendar
+                      size={50}
+                      className="mb-4 bg-gray-300 p-1 rounded-xl"
+                    />
+                  );
                 case "card":
-                  return <CreditCard size={50} className="mb-4 bg-gray-300 p-1 rounded-xl" />;
+                  return (
+                    <CreditCard
+                      size={50}
+                      className="mb-4 bg-gray-300 p-1 rounded-xl"
+                    />
+                  );
                 default:
                   return <span>{feature.icon}</span>;
               }

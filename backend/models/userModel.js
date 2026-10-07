@@ -37,7 +37,12 @@ const userSchema = new mongoose.Schema(
     },
 
     verificationCodeValidation: {
-      type: String,
+      type: Number,
+      select: false,
+    },
+
+    verificationCodeSentAt: {
+      type: Number,
       select: false,
     },
 

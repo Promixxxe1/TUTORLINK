@@ -45,9 +45,14 @@ export default function LoginPage() {
         }
       }, 1500);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Login failed. Please try again.",
-      );
+      const resp = err.response?.data;
+      if (resp?.requiresVerification) {
+        // redirect to verify page with email
+        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+        return;
+      }
+
+      setError(resp?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }

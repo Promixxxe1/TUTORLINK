@@ -1,9 +1,11 @@
 import crypto from "crypto";
 import transporter from "../config/Email.js";
+import emailService from "../utils/emailService.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
+import { promisify } from "util";
 
 // Signup - Create a new user with password hashing
 export const signup = async (req, res) => {
@@ -12,18 +14,28 @@ export const signup = async (req, res) => {
     console.log("Request body:", req.body); // Debug
 
     const { name, email, password, role, address } = req.body;
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
 
     // Validate required fields
-    if (!name || !email || !password || !role) {
+    if (!name || !normalizedEmail || !password || !role) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     // Check if user already exists
-    const existingUser = await userModel.findOne({ email });
+    const existingUser = await userModel.findOne({ email: normalizedEmail });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "User with this email already exists" });
+      const existingMessage =
+        "An account with this email already exists. Please proceed to login.";
+
+      return res.status(409).json({
+        message: existingMessage,
+        emailExists: true,
+        requiresLogin: true,
+        requiresVerification: existingUser.verified === false,
+        email: existingUser.email,
+      });
     }
 
     // Hash password
@@ -34,35 +46,43 @@ export const signup = async (req, res) => {
     // Create new user
     const newUser = new userModel({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       role: role || "student",
       address: address || "",
     });
 
-    // Generate email verification code and expiry
+    // Generate email verification code and expiry (6 digits)
     const verificationCode = crypto.randomInt(100000, 1000000).toString();
-    newUser.verificationCode = verificationCode;
-    newUser.verificationCodeValidation = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    // hash the code before storing
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(verificationCode, salt);
+    newUser.verificationCode = hashed;
+    newUser.verificationCodeValidation = Date.now() + 10 * 60 * 1000; // 10 minutes
+    newUser.verificationCodeSentAt = Date.now();
 
     await newUser.save();
     console.log("✅ User saved to DB:", newUser); // Debug
 
     // Send verification email (best-effort)
     try {
-      await transporter.sendMail({
-        from: `"TutorLink" <${process.env.EMAIL_USER}>`,
-        to: newUser.email,
-        subject: "Verify your TutorLink email",
-        html: `
-          <p>Hello ${newUser.name},</p>
-          <p>Please use the code below to verify your email address:</p>
-          <h2 style="letter-spacing:8px">${verificationCode}</h2>
-          <p>This code expires in 24 hours.</p>
-        `,
-      });
+      // Use emailService which prefers HTTPS API when configured
+      await emailService.sendVerificationEmail(
+        newUser.email,
+        verificationCode,
+        newUser.name,
+      );
     } catch (err) {
       console.error("Failed to send verification email:", err?.message || err);
+      // rollback verification fields so user can retry
+      newUser.verificationCode = undefined;
+      newUser.verificationCodeValidation = undefined;
+      newUser.verificationCodeSentAt = undefined;
+      await newUser.save();
+      return res.status(502).json({
+        message:
+          "Failed to deliver verification email. Please try again later.",
+      });
     }
 
     res.status(201).json({
@@ -81,16 +101,21 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
 
     // Validate required fields
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res
         .status(400)
         .json({ message: "Email and password are required" });
     }
 
     // Find user by email and include password field
-    const user = await userModel.findOne({ email }).select("+password");
+    const user = await userModel
+      .findOne({ email: normalizedEmail })
+      .select("+password +verified");
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -104,6 +129,8 @@ export const login = async (req, res) => {
     if (!user.verified) {
       return res.status(403).json({
         message: "Please verify your email before logging in.",
+        requiresVerification: true,
+        email: user.email,
       });
     }
 
@@ -139,15 +166,18 @@ export const forgotPassword = async (req, res) => {
   try {
     console.log("FORGOT PASSWORD CONTROLLER REACHED");
     const { email } = req.body;
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
 
-    if (!email) {
+    if (!normalizedEmail) {
       return res.status(400).json({
         message: "Email is required.",
       });
     }
 
     const user = await userModel
-      .findOne({ email })
+      .findOne({ email: normalizedEmail })
       .select("+forgotPasswordCode +forgotPasswordCodeValidation +verified");
 
     if (!user) {
@@ -234,49 +264,60 @@ export const forgotPassword = async (req, res) => {
 export const resendVerification = async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ message: "Email required" });
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
+    if (!normalizedEmail)
+      return res.status(400).json({ message: "Email required" });
 
     const user = await userModel
-      .findOne({ email })
-      .select("+verificationCode +verificationCodeValidation +verified");
+      .findOne({ email: normalizedEmail })
+      .select(
+        "+verificationCode +verificationCodeValidation +verified +verificationCodeSentAt",
+      );
 
     if (!user) return res.status(404).json({ message: "User not found" });
     if (user.verified)
       return res.status(400).json({ message: "User already verified" });
+    // Enforce a 60s cooldown between resends
+    const now = Date.now();
+    if (
+      user.verificationCodeSentAt &&
+      now - user.verificationCodeSentAt < 60 * 1000
+    ) {
+      return res
+        .status(429)
+        .json({ message: "Please wait before requesting another code" });
+    }
 
     const verificationCode = crypto.randomInt(100000, 1000000).toString();
-    user.verificationCode = verificationCode;
-    user.verificationCodeValidation = Date.now() + 24 * 60 * 60 * 1000;
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(verificationCode, salt);
+    user.verificationCode = hashed;
+    user.verificationCodeValidation = Date.now() + 10 * 60 * 1000; // 10 minutes
+    user.verificationCodeSentAt = Date.now();
 
     await user.save();
 
     try {
-      await transporter.sendMail({
-        from: `"TutorLink" <${process.env.EMAIL_USER}>`,
-        to: user.email,
-        subject: "Verify your TutorLink email",
-        html: `
-          <p>Hello ${user.name},</p>
-          <p>Please use the code below to verify your email address:</p>
-          <h2 style="letter-spacing:8px">${verificationCode}</h2>
-          <p>This code expires in 24 hours.</p>
-        `,
-      });
+      await emailService.sendVerificationEmail(
+        user.email,
+        verificationCode,
+        user.name,
+      );
     } catch (err) {
       console.error(
         "Failed to resend verification email:",
         err?.message || err,
       );
-
-      return res.status(500).json({
-        message: "Failed to send verification email.",
-        error: err?.message || "Email sending failed",
+      // Do not leave old code invalidated if send failed — keep previous valid code
+      return res.status(502).json({
+        message:
+          "Failed to deliver verification email. Please try again later.",
       });
     }
 
-    return res.status(200).json({
-      message: "Verification code resent",
-    });
+    return res.status(200).json({ message: "Verification code resent" });
   } catch (error) {
     console.error("Resend verification error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -287,14 +328,19 @@ export const resendVerification = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
     const { email, code } = req.body;
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
 
-    if (!email || !code) {
+    if (!normalizedEmail || !code) {
       return res.status(400).json({ message: "Email and code are required" });
     }
 
     const user = await userModel
-      .findOne({ email })
-      .select("+verificationCode +verificationCodeValidation +verified");
+      .findOne({ email: normalizedEmail })
+      .select(
+        "+verificationCode +verificationCodeValidation +verified +verificationCodeSentAt",
+      );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -304,9 +350,10 @@ export const verifyEmail = async (req, res) => {
       return res.status(400).json({ message: "User already verified" });
     }
 
-    if (user.verificationCode !== code) {
+    // Compare hashed code
+    const valid = await bcrypt.compare(code, user.verificationCode || "");
+    if (!valid)
       return res.status(400).json({ message: "Invalid verification code" });
-    }
 
     if (Date.now() > Number(user.verificationCodeValidation)) {
       return res.status(400).json({ message: "Verification code expired" });
@@ -315,6 +362,7 @@ export const verifyEmail = async (req, res) => {
     user.verified = true;
     user.verificationCode = null;
     user.verificationCodeValidation = null;
+    user.verificationCodeSentAt = null;
 
     await user.save();
 
@@ -347,15 +395,18 @@ export const verifyEmail = async (req, res) => {
 export const resetPassword = async (req, res) => {
   try {
     const { email, code, newPassword } = req.body;
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
 
-    if (!email || !code || !newPassword) {
+    if (!normalizedEmail || !code || !newPassword) {
       return res
         .status(400)
         .json({ message: "Email, code and new password are required" });
     }
 
     const user = await userModel
-      .findOne({ email })
+      .findOne({ email: normalizedEmail })
       .select("+forgotPasswordCode +forgotPasswordCodeValidation +password");
 
     if (!user) {
@@ -405,13 +456,24 @@ export const resetPassword = async (req, res) => {
 // Create a new user (legacy - for other purposes)
 export const createUser = async (req, res) => {
   try {
-    const newUser = new userModel(req.body);
+    const payload = {
+      ...req.body,
+      email: String(req.body?.email || "")
+        .trim()
+        .toLowerCase(),
+    };
+    const newUser = new userModel(payload);
     const { email } = newUser;
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "User with this email already exists" });
+      return res.status(400).json({
+        message:
+          "An account with this email already exists. Please proceed to login.",
+        emailExists: true,
+        requiresLogin: true,
+        requiresVerification: !existingUser.verified,
+        email: existingUser.email,
+      });
     }
 
     const savedUser = await newUser.save();
