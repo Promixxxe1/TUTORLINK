@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import { useAuth } from "../../context/AuthContext";
 import { userAPI } from "../../services/api";
+import { getAvatarUrl } from "../../types";
 
 export default function TutorProfilePage() {
   const { user, setUser } = useAuth();
@@ -250,7 +251,7 @@ export default function TutorProfilePage() {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
             <div className="relative">
               <img
-                src={user.avatar || `https://i.pravatar.cc/200?u=${user.id}`}
+                src={getAvatarUrl(user)}
                 alt={user.name}
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
               />

@@ -29,9 +29,7 @@ const Footer = () => {
             <Link to="/find-tutors">
               <li className="hover:underline cursor-pointer">Find Tutors</li>
             </Link>
-            <Link to="/compare-tutors">
-              <li className="hover:underline cursor-pointer">Compare Tutors</li>
-            </Link>
+            
             <Link to="/tutor-application">
               <li className="hover:underline cursor-pointer">Become a Tutor</li>
             </Link>
@@ -52,9 +50,7 @@ const Footer = () => {
             <Link to="/contact">
               <li className="hover:underline cursor-pointer">Contact</li>
             </Link>
-            <Link to="/live-support">
-              <li className="hover:underline cursor-pointer">Live Support</li>
-            </Link>
+            
           </ul>
         </div>
 

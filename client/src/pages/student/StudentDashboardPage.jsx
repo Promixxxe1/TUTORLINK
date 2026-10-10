@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import { NavLink, useNavigate } from "react-router-dom";
 import { bookingAPI } from "../../services/api";
+import { getAvatarUrl } from "../../types";
 
 const StudentDashboardPage = () => {
   const { user } = useAuth();
@@ -250,10 +251,11 @@ const StudentDashboardPage = () => {
 
                   <div className="flex items-center gap-4 mt-8">
                     <img
-                      src={
-                        booking.tutor?.avatar ||
-                        `https://i.pravatar.cc/100?u=${booking.tutor?._id || booking.tutor}`
-                      }
+                      src={getAvatarUrl({
+                        avatar: booking.tutor?.avatar,
+                        _id: booking.tutor?._id || booking.tutor,
+                        email: booking.tutor?.email,
+                      })}
                       className="w-14 h-14 rounded-2xl object-cover"
                       alt={booking.tutor?.name || "Tutor"}
                     />

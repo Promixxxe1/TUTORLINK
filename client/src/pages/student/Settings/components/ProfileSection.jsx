@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { userAPI } from "../../../../services/api.js";
 import { useAuth } from "../../../../context/AuthContext";
 import { Camera, Save } from "lucide-react";
+import { getAvatarUrl } from "../../../../types";
 
 export default function ProfileSection() {
   const { user, setUser } = useAuth();
@@ -13,9 +14,7 @@ export default function ProfileSection() {
     bio: user?.bio || "",
   });
 
-  const [avatar, setAvatar] = useState(
-    user?.avatar || `https://i.pravatar.cc/200?u=${user?.id}`,
-  );
+  const [avatar, setAvatar] = useState(getAvatarUrl(user));
 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -28,7 +27,7 @@ export default function ProfileSection() {
       bio: user.bio || "",
     });
 
-    setAvatar(user.avatar || `https://i.pravatar.cc/200?u=${user.id}`);
+    setAvatar(getAvatarUrl(user));
   }, [user]);
 
   const handleImage = async (e) => {

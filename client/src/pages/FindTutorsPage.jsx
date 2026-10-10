@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { userAPI } from "../services/api";
 import { toast } from "react-toastify";
+import { getAvatarUrl } from "../types";
 const subjects = [
   "All",
   "Mathematics",
@@ -70,16 +71,16 @@ export default function FindTutorsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-0 py-8">
-      <div className="mb-8 px-6 md:px-8">
+      {/* <div className="mb-8 px-6 md:px-8">
         <h1 className="text-3xl md:text-4xl font-black text-primary tracking-tight mb-2">
           Find Your Tutor
         </h1>
         <p className="text-on-surface-variant">
           Browse verified experts across all subjects.
         </p>
-      </div>
+      </div> */}
 
-      {/* Search & Filters */}
+      {/* Search & Filters
       <div className="sticky top-16 md:top-20 z-20 bg-surface-container-low border-b border-outline-variant/10 px-6 md:px-8 py-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
@@ -144,7 +145,7 @@ export default function FindTutorsPage() {
             className="flex-1 accent-secondary h-1.5 rounded-full"
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="px-6 md:px-8">
         {loading ? (
@@ -170,9 +171,7 @@ export default function FindTutorsPage() {
                   className="bg-white rounded-2xl border shadow-sm p-6"
                 >
                   <img
-                    src={
-                      tutor.avatar || `https://i.pravatar.cc/200?u=${tutor._id}`
-                    }
+                    src={getAvatarUrl(tutor)}
                     alt={tutor.name}
                     className="w-24 h-24 rounded-full mx-auto object-cover"
                   />
@@ -188,7 +187,8 @@ export default function FindTutorsPage() {
                   </p>
 
                   <div className="flex gap-3 mt-6">
-                    <Link to={`/tutors/${tutor._id}`}
+                    <Link
+                      to={`/tutors/${tutor._id}`}
                       className="flex-1 text-center border rounded-xl py-2 font-semibold hover:bg-slate-100"
                     >
                       View Profile

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { userAPI } from "../services/api";
 import { toast } from "react-toastify";
+import { getAvatarUrl } from "../types";
 
 export default function PublicTutorProfilePage() {
   const { id } = useParams();
@@ -53,7 +54,7 @@ export default function PublicTutorProfilePage() {
       <div className="bg-white rounded-3xl shadow border p-8">
         <div className="flex flex-col md:flex-row gap-8 items-center">
           <img
-            src={tutor.avatar || `https://i.pravatar.cc/250?u=${tutor._id}`}
+            src={getAvatarUrl(tutor)}
             alt={tutor.name}
             className="w-40 h-40 rounded-full object-cover"
           />

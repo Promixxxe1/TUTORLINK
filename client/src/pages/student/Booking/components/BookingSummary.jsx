@@ -1,23 +1,25 @@
+import { getAvatarUrl } from "../../../../types";
+
 export default function BookingSummary({
   tutor,
   bookingData,
   onBook,
   loading,
 }) {
- const selectedCourse = tutor?.courses?.find(
-   (course) => course._id === bookingData.courseId,
- );
+  const selectedCourse = tutor?.courses?.find(
+    (course) => course._id === bookingData.courseId,
+  );
 
- const pricePerHour = selectedCourse?.pricePerHour || 0;
+  const pricePerHour = selectedCourse?.pricePerHour || 0;
 
- const total =
-   bookingData.duration === 30
-     ? pricePerHour * 0.5
-     : bookingData.duration === 90
-       ? pricePerHour * 1.5
-       : bookingData.duration === 120
-         ? pricePerHour * 2
-         : pricePerHour;
+  const total =
+    bookingData.duration === 30
+      ? pricePerHour * 0.5
+      : bookingData.duration === 90
+        ? pricePerHour * 1.5
+        : bookingData.duration === 120
+          ? pricePerHour * 2
+          : pricePerHour;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky top-24">
@@ -27,7 +29,11 @@ export default function BookingSummary({
 
       <div className="flex items-center gap-4 mb-6">
         <img
-          src={tutor?.avatar || `https://i.pravatar.cc/100?u=${tutor?._id}`}
+          src={getAvatarUrl({
+            avatar: tutor?.avatar,
+            _id: tutor?._id,
+            email: tutor?.email,
+          })}
           alt=""
           className="w-16 h-16 rounded-full object-cover"
         />

@@ -523,14 +523,42 @@ export const uploadAvatar = async (req, res) => {
       });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "TutorLink/avatars",
+    const missingCloudinaryConfig =
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET;
+
+    if (missingCloudinaryConfig) {
+      return res.status(500).json({
+        message:
+          "Cloudinary is not configured on the server. Add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.",
+      });
+    }
+
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "TutorLink/avatars",
+          transformation: [{ format: "webp", quality: "auto" }],
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+
+          resolve(result);
+        },
+      );
+
+      stream.end(req.file.buffer);
     });
 
     const updatedUser = await userModel.findByIdAndUpdate(
       req.user._id,
       {
-        avatar: result.secure_url,
+        avatar: uploadResult.secure_url,
       },
       { new: true },
     );
@@ -548,8 +576,14 @@ export const uploadAvatar = async (req, res) => {
       },
     });
   } catch (error) {
+   console.error("Avatar upload failed:", {
+     message: error.message,
+     http_code: error.http_code,
+     name: error.name,
+     stack: error.stack,
+   });
     res.status(500).json({
-      message: error.message,
+      message: error.message || "Avatar upload failed",
     });
   }
 };

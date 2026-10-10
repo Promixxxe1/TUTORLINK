@@ -185,11 +185,11 @@ export default function TutorSchedulePage() {
                     {/* Student */}
                     <div className="flex items-center gap-3 mt-5">
                       <img
-                        src={
-                          booking.student?.avatar ||
-                          `https://i.pravatar.cc/100?u=${booking.student?._id}`
-                        }
-                        alt={booking.student?.name || "Student"}
+                        src={getAvatarUrl({
+                          avatar: booking.student?.avatar,
+                          _id: booking.student?._id,
+                          email: booking.student?.email,
+                        })}
                         className="w-10 h-10 rounded-full object-cover"
                       />
 
