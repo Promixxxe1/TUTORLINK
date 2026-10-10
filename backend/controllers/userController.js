@@ -495,6 +495,7 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json({
       message: "Profile updated successfully",
+      avatar: updatedUser.avatar,
       user: {
         id: updatedUser._id,
         name: updatedUser.name,
@@ -537,30 +538,20 @@ export const uploadAvatar = async (req, res) => {
 
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-{
-folder: "tutorlink",
-resource_type: "image",
-},
-(error, result) => {
-if (error) {
-console.error("Cloudinary detailed upload error:", {
-message: error.message,
-http_code: error.http_code,
-name: error.name,
-error: error.error,
-});
+        {
+          folder: "tutorlink",
+          transformation: [{ format: "webp", quality: "auto" }],
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-```
-  reject(error);
-  return;
-}
-
-resolve(result);
-```
-
-},
-);
-
+          resolve(result);
+        },
+      );
 
       stream.end(req.file.buffer);
     });

@@ -57,16 +57,43 @@ export const userAPI = {
 
   updateProfile: (data) => api.put("/user/profile", data),
 
-  // 👇 Paste it here
-  updateAvatar: (file) => {
-    const formData = new FormData();
-    formData.append("avatar", file);
+  updateAvatar: async (file) => {
+    if (typeof file === "string") {
+      return api.put("/user/profile", { avatar: file });
+    }
 
-    return api.put("/user/avatar", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      throw new Error(
+        "Cloudinary is not configured in the client. Add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET.",
+      );
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+
+    const cloudinaryResponse = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
       },
-    });
+    );
+
+    const cloudinaryData = await cloudinaryResponse.json();
+
+    if (!cloudinaryResponse.ok) {
+      throw new Error(
+        cloudinaryData?.error?.message || "Failed to upload image to Cloudinary",
+      );
+    }
+
+    const avatarUrl = cloudinaryData.secure_url;
+
+    return api.put("/user/profile", { avatar: avatarUrl });
   },
 
   changePassword: (data) => api.put("/user/change-password", data),
