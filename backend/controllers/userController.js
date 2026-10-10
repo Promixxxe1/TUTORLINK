@@ -537,20 +537,30 @@ export const uploadAvatar = async (req, res) => {
 
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        {
-          folder: "TutorLink/avatars",
-          transformation: [{ format: "webp", quality: "auto" }],
-          resource_type: "image",
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-            return;
-          }
+{
+folder: "tutorlink",
+resource_type: "image",
+},
+(error, result) => {
+if (error) {
+console.error("Cloudinary detailed upload error:", {
+message: error.message,
+http_code: error.http_code,
+name: error.name,
+error: error.error,
+});
 
-          resolve(result);
-        },
-      );
+```
+  reject(error);
+  return;
+}
+
+resolve(result);
+```
+
+},
+);
+
 
       stream.end(req.file.buffer);
     });
