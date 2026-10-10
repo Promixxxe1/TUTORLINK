@@ -3,8 +3,8 @@ import { BadgeCheck } from "lucide-react";
 import { Sparkles } from "lucide-react";
 import { Users } from "lucide-react";
 import { Brain } from "lucide-react";
-import aboutUsImage from "../assets/about.png";
-import video from "../assets/hero-video.mp4";
+import aboutUsImage from "../assets/about-hero.webp";
+import video from "../assets/about-hero.webp";
 import { Link } from "react-router-dom";
 
 const stats = [
@@ -74,7 +74,7 @@ const AboutUsPage = () => {
           <img
             className="rounded-2xl w-500 object-cover"
             src={aboutUsImage}
-            alt=""
+            alt="Tutors collaborating and learning"
           />
         </div>
       </div>
@@ -148,13 +148,11 @@ const AboutUsPage = () => {
 
       {/* story.... */}
       <section className="py-24 relative overflow-hidden">
-        <video 
-          src={video} 
-          loop 
-          muted 
-          autoPlay
+        <img
+          src={video}
+          alt="TutorLink learning story"
           className="absolute inset-0 w-full h-full object-cover"
-        ></video>
+        />
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="mb-12">

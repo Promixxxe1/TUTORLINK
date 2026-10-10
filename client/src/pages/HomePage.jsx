@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ShieldCheck, Calendar, CreditCard } from "lucide-react";
-import homevideo from "../assets/homepage-video.mp4";
+import homevideo from "../assets/homepage-hero.webp";
 
 const features = [
   {
@@ -42,14 +42,12 @@ const HomePage = () => {
   return (
     <div>
       <section className="relative overflow-hidden flex flex-col lg:flex-row justify-between gap-10 pt-28 sm:pt-32 lg:pt-40 lg:pb-30 lg:px-70 px-5 sm:px-10 leading-10 m-auto">
-        {/* Video Background */}
-        <video
+        {/* Hero background in WebP */}
+        <img
           src={homevideo}
-          loop
-          muted
-          autoPlay
+          alt="TutorLink hero background"
           className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-70"
-        ></video>
+        />
 
         {/* Overlay for text readability */}
         <div className="absolute inset-0 bg-black/35 z-0"></div>
