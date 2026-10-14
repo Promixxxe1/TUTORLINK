@@ -44,10 +44,13 @@ const AboutUsPage = () => {
             Our Identity
           </span>
           <h1 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-7xl">
-            Crafting the Future of <span className="text-gray-700">Knowledge</span>
+            Crafting the Future of{" "}
+            <span className="text-gray-700">Knowledge</span>
           </h1>
           <p className="text-base leading-relaxed text-gray-700 sm:text-lg lg:text-2xl">
-            TutorLink is more than a marketplace. It&apos;s a digital atelier where academic mastery meets personalized apprenticeship, fostering a global community of lifelong learners.
+            TutorLink is more than a marketplace. It&apos;s a digital atelier
+            where academic mastery meets personalized apprenticeship, fostering
+            a global community of lifelong learners.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-5">
             <Link
@@ -101,7 +104,11 @@ const AboutUsPage = () => {
             </div>
             <div className="w-full space-y-8 lg:w-2/3">
               <p className="text-2xl leading-tight text-slate-900 sm:text-3xl">
-                To democratize access to elite mentorship, bridging the gap between passive learning and <span className="font-semibold text-gray-700">active intellectual growth.</span>
+                To democratize access to elite mentorship, bridging the gap
+                between passive learning and{" "}
+                <span className="font-semibold text-gray-700">
+                  active intellectual growth.
+                </span>
               </p>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {[
@@ -154,17 +161,22 @@ const AboutUsPage = () => {
               The TutorLink Story
             </h2>
             <p className="text-base font-semibold text-gray-200 sm:text-lg">
-              Founded in 2024, our journey began with a simple observation: the digital classroom was missing a human soul.
+              Founded in 2024, our journey began with a simple observation: the
+              digital classroom was missing a human soul.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="flex flex-col justify-center space-y-6 rounded-3xl p-6 text-white sm:p-10">
-              <h4 className="text-5xl font-black text-white/80 sm:text-6xl">50k+</h4>
+              <h4 className="text-5xl font-black text-white/80 sm:text-6xl">
+                50k+
+              </h4>
               <p className="text-lg font-medium text-white/70 sm:text-xl">
-                Hours of mentorship delivered across 40 countries in our first year.
+                Hours of mentorship delivered across 40 countries in our first
+                year.
               </p>
               <blockquote className="border-l-4 border-slate-400 pl-4 text-slate-200 italic">
-                &ldquo;We didn&apos;t want to build another app. We wanted to build a legacy of academic empowerment.&rdquo;
+                &ldquo;We didn&apos;t want to build another app. We wanted to
+                build a legacy of academic empowerment.&rdquo;
               </blockquote>
             </div>
           </div>
@@ -190,11 +202,17 @@ const AboutUsPage = () => {
                 className={`group relative ${index === 1 ? "md:mt-8" : ""} ${index === 2 ? "md:mt-16" : ""}`}
               >
                 <div className="h-full rounded-4xl border border-gray-300 bg-white p-6 shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-lg sm:p-10">
-                  <div className={`mb-8 flex h-16 w-16 items-center justify-center rounded-2xl ${values.color}`}>
+                  <div
+                    className={`mb-8 flex h-16 w-16 items-center justify-center rounded-2xl ${values.color}`}
+                  >
                     <span className="text-3xl">{values.icon}</span>
                   </div>
-                  <h3 className="mb-4 text-2xl font-bold text-slate-900">{values.title}</h3>
-                  <p className="leading-relaxed text-slate-700">{values.desc}</p>
+                  <h3 className="mb-4 text-2xl font-bold text-slate-900">
+                    {values.title}
+                  </h3>
+                  <p className="leading-relaxed text-slate-700">
+                    {values.desc}
+                  </p>
                 </div>
               </div>
             ))}

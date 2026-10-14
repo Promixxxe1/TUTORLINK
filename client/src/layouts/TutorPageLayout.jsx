@@ -398,7 +398,9 @@ export default function TutorLayout() {
                       {item.icon}
                     </div>
 
-                    <span className="text-[10px] font-semibold sm:text-[11px]">{item.label}</span>
+                    <span className="text-[10px] font-semibold sm:text-[11px]">
+                      {item.label}
+                    </span>
                   </>
                 )}
               </NavLink>

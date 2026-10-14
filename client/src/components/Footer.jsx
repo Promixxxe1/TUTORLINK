@@ -10,7 +10,8 @@ const Footer = () => {
               TutorLink
             </h2>
             <p className="max-w-md text-sm leading-relaxed text-gray-600 sm:text-base">
-              Redefining education through personalized, one-on-one mentorship from verified world-class experts.
+              Redefining education through personalized, one-on-one mentorship
+              from verified world-class experts.
             </p>
             <p className="text-lg text-slate-400">◯◯◯</p>
           </div>
@@ -20,9 +21,30 @@ const Footer = () => {
               PLATFORM
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-gray-600 sm:text-base">
-              <li><Link to="/find-tutors" className="hover:text-slate-900 hover:underline">Find Tutors</Link></li>
-              <li><Link to="/tutor-application" className="hover:text-slate-900 hover:underline">Become a Tutor</Link></li>
-              <li><Link to="/faqs" className="hover:text-slate-900 hover:underline">FAQs</Link></li>
+              <li>
+                <Link
+                  to="/find-tutors"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Find Tutors
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/tutor-application"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Become a Tutor
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faqs"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  FAQs
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -31,8 +53,22 @@ const Footer = () => {
               COMPANY
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-gray-600 sm:text-base">
-              <li><Link to="/about" className="hover:text-slate-900 hover:underline">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-slate-900 hover:underline">Contact</Link></li>
+              <li>
+                <Link
+                  to="/about"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -41,11 +77,46 @@ const Footer = () => {
               LEGAL
             </h2>
             <ul className="mt-4 space-y-3 text-sm text-gray-600 sm:text-base">
-              <li><Link to="/privacy-policy" className="hover:text-slate-900 hover:underline">Privacy Policy</Link></li>
-              <li><Link to="/terms-of-service" className="hover:text-slate-900 hover:underline">Terms Of Service</Link></li>
-              <li><Link to="/legal" className="hover:text-slate-900 hover:underline">Legal</Link></li>
-              <li><Link to="/data-privacy" className="hover:text-slate-900 hover:underline">Data Privacy</Link></li>
-              <li><Link to="/data-deletion" className="hover:text-slate-900 hover:underline">Data Deletion</Link></li>
+              <li>
+                <Link
+                  to="/privacy-policy"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms-of-service"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Terms Of Service
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/legal"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Legal
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/data-privacy"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Data Privacy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/data-deletion"
+                  className="hover:text-slate-900 hover:underline"
+                >
+                  Data Deletion
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -58,9 +129,21 @@ const Footer = () => {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600 sm:text-base">
-            <Link to="/privacy-policy" className="hover:text-slate-900 hover:underline">Privacy</Link>
-            <Link to="/legal" className="hover:text-slate-900 hover:underline">Legal</Link>
-            <Link to="/terms-of-service" className="hover:text-slate-900 hover:underline">Terms</Link>
+            <Link
+              to="/privacy-policy"
+              className="hover:text-slate-900 hover:underline"
+            >
+              Privacy
+            </Link>
+            <Link to="/legal" className="hover:text-slate-900 hover:underline">
+              Legal
+            </Link>
+            <Link
+              to="/terms-of-service"
+              className="hover:text-slate-900 hover:underline"
+            >
+              Terms
+            </Link>
           </div>
         </div>
       </div>

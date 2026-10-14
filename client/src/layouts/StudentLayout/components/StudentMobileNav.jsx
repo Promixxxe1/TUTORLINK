@@ -53,7 +53,7 @@ export default function StudentMobileNav() {
   }, [lastScrollY]);
 
   return (
-    <nav className="fixed bottom-3 left-1/2 z-30 w-[94%] max-w-md -translate-x-1/2 transition-all duration-300 ease-out lg:hidden">
+    <nav className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-30 w-[94%] max-w-md -translate-x-1/2 transition-all duration-300 ease-out lg:hidden">
       <div
         className={`rounded-[1.5rem] border border-slate-700/80 bg-[#071320]/95 shadow-2xl backdrop-blur-xl transition-all duration-300 ${
           isCompact ? "h-14" : "h-16"
@@ -72,7 +72,9 @@ export default function StudentMobileNav() {
             >
               {item.icon}
 
-              <span className="mt-1 text-[10px] font-medium sm:text-[11px]">{item.title}</span>
+              <span className="mt-1 text-[10px] font-medium sm:text-[11px]">
+                {item.title}
+              </span>
             </NavLink>
           ))}
         </div>

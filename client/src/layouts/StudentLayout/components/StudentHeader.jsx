@@ -10,25 +10,27 @@ export default function StudentHeader({
 }) {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur-xl">
-      <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-8">
-        <div className="flex min-w-0 items-center gap-3">
+      <div className="flex items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-5 lg:px-8">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100 lg:hidden"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100 lg:hidden"
           >
             <Menu size={22} />
           </button>
 
-          <div className="hidden min-w-0 lg:flex lg:flex-col">
-            <RefreshButton />
-            <p className="truncate text-sm text-slate-500">
-              Welcome back, {user?.name}
+          <div className="min-w-0">
+            <div className="hidden sm:block">
+              <RefreshButton />
+            </div>
+            <p className="truncate text-sm font-medium text-slate-600 sm:text-base">
+              Welcome back, <span className="font-semibold text-slate-900">{user?.name || "Student"}</span>
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <RefreshButton />
           </div>
 
@@ -43,7 +45,7 @@ export default function StudentHeader({
 
           <NavLink
             to="/student/notifications"
-            className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100"
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100"
           >
             <Bell size={20} />
 
@@ -57,7 +59,7 @@ export default function StudentHeader({
           <img
             src={avatarUrl}
             alt={user?.name}
-            className="h-11 w-11 rounded-full border-2 border-white object-cover shadow-md"
+            className="h-11 w-11 shrink-0 rounded-full border-2 border-white object-cover shadow-md"
           />
         </div>
       </div>

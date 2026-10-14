@@ -37,25 +37,39 @@ const Navbar = () => {
 
         <nav className="hidden flex-1 justify-center md:flex">
           <ul className="flex items-center gap-6 text-base font-semibold text-gray-600 lg:gap-8 lg:text-lg">
-            <li className={active === "Home" ? "font-extrabold text-black" : ""}>
+            <li
+              className={active === "Home" ? "font-extrabold text-black" : ""}
+            >
               <Link to="/" onClick={() => setActive("Home")}>
                 Home
               </Link>
             </li>
 
-            <li className={active === "About Us" ? "font-extrabold text-black" : ""}>
+            <li
+              className={
+                active === "About Us" ? "font-extrabold text-black" : ""
+              }
+            >
               <Link to="/about" onClick={() => setActive("About Us")}>
                 About Us
               </Link>
             </li>
 
-            <li className={active === "Contact Us" ? "font-extrabold text-black" : ""}>
+            <li
+              className={
+                active === "Contact Us" ? "font-extrabold text-black" : ""
+              }
+            >
               <Link to="/contact" onClick={() => setActive("Contact Us")}>
                 Contact Us
               </Link>
             </li>
 
-            <li className={active === "Find Tutors" ? "font-extrabold text-black" : ""}>
+            <li
+              className={
+                active === "Find Tutors" ? "font-extrabold text-black" : ""
+              }
+            >
               <Link to="/find-tutors" onClick={() => setActive("Find Tutors")}>
                 Find Tutors
               </Link>
@@ -66,7 +80,10 @@ const Navbar = () => {
         <div className="hidden md:block">
           {!user ? (
             <div className="flex items-center gap-4 lg:gap-5">
-              <Link to="/login" className="text-sm font-semibold text-gray-600 lg:text-base">
+              <Link
+                to="/login"
+                className="text-sm font-semibold text-gray-600 lg:text-base"
+              >
                 Login
               </Link>
 
@@ -84,7 +101,11 @@ const Navbar = () => {
               </span>
 
               <Link
-                to={user.role === "tutor" ? "/tutor/dashboard" : "/student/dashboard"}
+                to={
+                  user.role === "tutor"
+                    ? "/tutor/dashboard"
+                    : "/student/dashboard"
+                }
                 className="rounded-2xl bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 lg:px-5 lg:py-3"
               >
                 Dashboard
@@ -98,39 +119,86 @@ const Navbar = () => {
         <div className="border-t border-slate-200 bg-white shadow-lg md:hidden">
           <ul className="flex flex-col items-center gap-5 py-6 text-lg font-semibold text-gray-600">
             <li>
-              <Link to="/" onClick={() => { setActive("Home"); setIsOpen(false); }}>Home</Link>
+              <Link
+                to="/"
+                onClick={() => {
+                  setActive("Home");
+                  setIsOpen(false);
+                }}
+              >
+                Home
+              </Link>
             </li>
             <li>
-              <Link to="/about" onClick={() => { setActive("About Us"); setIsOpen(false); }}>About Us</Link>
+              <Link
+                to="/about"
+                onClick={() => {
+                  setActive("About Us");
+                  setIsOpen(false);
+                }}
+              >
+                About Us
+              </Link>
             </li>
             <li>
-              <Link to="/contact" onClick={() => { setActive("Contact Us"); setIsOpen(false); }}>Contact Us</Link>
+              <Link
+                to="/contact"
+                onClick={() => {
+                  setActive("Contact Us");
+                  setIsOpen(false);
+                }}
+              >
+                Contact Us
+              </Link>
             </li>
             <li>
-              <Link to="/find-tutors" onClick={() => { setActive("Find Tutors"); setIsOpen(false); }}>Find Tutors</Link>
+              <Link
+                to="/find-tutors"
+                onClick={() => {
+                  setActive("Find Tutors");
+                  setIsOpen(false);
+                }}
+              >
+                Find Tutors
+              </Link>
             </li>
 
             {!user ? (
               <>
                 <li>
-                  <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    Login
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/signup" onClick={() => setIsOpen(false)}>Join Now</Link>
+                  <Link to="/signup" onClick={() => setIsOpen(false)}>
+                    Join Now
+                  </Link>
                 </li>
               </>
             ) : (
               <>
                 <li>
                   <Link
-                    to={user.role === "tutor" ? "/tutor/dashboard" : "/student/dashboard"}
+                    to={
+                      user.role === "tutor"
+                        ? "/tutor/dashboard"
+                        : "/student/dashboard"
+                    }
                     onClick={() => setIsOpen(false)}
                   >
                     Dashboard
                   </Link>
                 </li>
                 <li>
-                  <button onClick={() => { logout(); setIsOpen(false); }}>Logout</button>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsOpen(false);
+                    }}
+                  >
+                    Logout
+                  </button>
                 </li>
               </>
             )}

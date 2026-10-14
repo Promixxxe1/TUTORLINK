@@ -62,7 +62,8 @@ const HomePage = () => {
               Find Your <span className="text-gray-400">Perfect</span> Tutor.
             </h1>
             <p className="text-base leading-relaxed text-gray-100 sm:text-lg lg:text-2xl">
-              Experience personalized learning designed to help you master any subject with confidence.
+              Experience personalized learning designed to help you master any
+              subject with confidence.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -79,7 +80,8 @@ const HomePage = () => {
               </Link>
             </div>
             <p className="mt-8 text-sm text-gray-100 sm:text-base">
-              <span className="font-semibold text-white">50,000+</span> students trust TutorLink
+              <span className="font-semibold text-white">50,000+</span> students
+              trust TutorLink
             </p>
           </div>
 
@@ -90,7 +92,9 @@ const HomePage = () => {
       <section className="bg-gray-200 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center">
-            <h2 className="text-3xl font-semibold sm:text-4xl">Why TutorLink?</h2>
+            <h2 className="text-3xl font-semibold sm:text-4xl">
+              Why TutorLink?
+            </h2>
             <p className="mt-3 text-base text-slate-700 sm:text-lg">
               Everything you need for a world-class learning experience.
             </p>
@@ -101,11 +105,26 @@ const HomePage = () => {
               const getIcon = () => {
                 switch (feature.icon) {
                   case "shield":
-                    return <ShieldCheck size={40} className="mb-4 rounded-xl bg-gray-300 p-2" />;
+                    return (
+                      <ShieldCheck
+                        size={40}
+                        className="mb-4 rounded-xl bg-gray-300 p-2"
+                      />
+                    );
                   case "calendar":
-                    return <Calendar size={40} className="mb-4 rounded-xl bg-gray-300 p-2" />;
+                    return (
+                      <Calendar
+                        size={40}
+                        className="mb-4 rounded-xl bg-gray-300 p-2"
+                      />
+                    );
                   case "card":
-                    return <CreditCard size={40} className="mb-4 rounded-xl bg-gray-300 p-2" />;
+                    return (
+                      <CreditCard
+                        size={40}
+                        className="mb-4 rounded-xl bg-gray-300 p-2"
+                      />
+                    );
                   default:
                     return <span>{feature.icon}</span>;
                 }
@@ -117,8 +136,12 @@ const HomePage = () => {
                   className="rounded-2xl bg-white p-6 shadow-xl transition duration-300 hover:bg-slate-900 hover:text-white sm:p-8"
                 >
                   {getIcon()}
-                  <h2 className="text-2xl font-semibold sm:text-3xl">{feature.title}</h2>
-                  <p className="mt-3 text-base leading-relaxed sm:text-lg">{feature.desc}</p>
+                  <h2 className="text-2xl font-semibold sm:text-3xl">
+                    {feature.title}
+                  </h2>
+                  <p className="mt-3 text-base leading-relaxed sm:text-lg">
+                    {feature.desc}
+                  </p>
                 </div>
               );
             })}
@@ -129,10 +152,17 @@ const HomePage = () => {
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-900">Featured Experts</h3>
-            <h2 className="mt-2 text-3xl font-semibold text-slate-900 sm:text-4xl">Learn from the Best</h2>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-900">
+              Featured Experts
+            </h3>
+            <h2 className="mt-2 text-3xl font-semibold text-slate-900 sm:text-4xl">
+              Learn from the Best
+            </h2>
           </div>
-          <Link to="/find-tutors" className="text-sm font-bold uppercase underline sm:text-base">
+          <Link
+            to="/find-tutors"
+            className="text-sm font-bold uppercase underline sm:text-base"
+          >
             Explore All →
           </Link>
         </div>
@@ -141,9 +171,12 @@ const HomePage = () => {
       <section className="bg-slate-900 py-12 text-white sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Master Any Skill in 3 Steps</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              Master Any Skill in 3 Steps
+            </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-400 sm:text-base">
-              Our streamlined process ensures you find the right match without the stress.
+              Our streamlined process ensures you find the right match without
+              the stress.
             </p>
           </div>
           <div className="relative mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -153,8 +186,12 @@ const HomePage = () => {
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gray-600 text-2xl font-black shadow-2xl sm:h-20 sm:w-20 sm:text-3xl">
                   {s.n}
                 </div>
-                <h3 className="mb-3 text-xl font-bold sm:text-2xl">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-slate-300 sm:text-base">{s.desc}</p>
+                <h3 className="mb-3 text-xl font-bold sm:text-2xl">
+                  {s.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-300 sm:text-base">
+                  {s.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -165,9 +202,12 @@ const HomePage = () => {
         <div className="mx-auto max-w-5xl px-4 py-12 text-center sm:px-6 sm:py-16">
           <div className="relative overflow-hidden rounded-3xl bg-gray-300 p-6 sm:p-10">
             <div className="pointer-events-none absolute -right-10 top-0 hidden h-40 w-40 rounded-full bg-gray-400 md:block" />
-            <h2 className="text-3xl font-bold text-black sm:text-4xl lg:text-5xl">Ready to unlock your potential?</h2>
+            <h2 className="text-3xl font-bold text-black sm:text-4xl lg:text-5xl">
+              Ready to unlock your potential?
+            </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-gray-700 sm:text-lg">
-              Join over 50,000 students who have improved their scores with TutorLink.
+              Join over 50,000 students who have improved their scores with
+              TutorLink.
             </p>
             <Link
               to="/signup"

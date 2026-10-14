@@ -75,7 +75,7 @@ export default function StudentLayout() {
           setSidebarOpen={setSidebarOpen}
         />
 
-        <main className="flex-1 overflow-x-hidden p-4 pb-24 sm:p-5 lg:p-8 lg:pb-8">
+        <main className="flex-1 overflow-x-hidden px-3 pb-28 pt-3 sm:px-4 sm:pt-4 lg:p-8 lg:pb-8">
           <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
