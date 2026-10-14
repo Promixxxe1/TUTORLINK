@@ -57,9 +57,7 @@ export default function StudentLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-
+    <div className="min-h-screen flex bg-gray-100">
       <StudentSideBar
         user={user}
         avatarUrl={avatarUrl}
@@ -69,11 +67,7 @@ export default function StudentLayout() {
         sessionCount={sessionCount}
       />
 
-      {/* Main Section */}
-
-      <div className="flex-1 lg:ml-80 flex flex-col min-h-screen">
-        {/* Header */}
-
+      <div className="flex min-h-screen flex-1 flex-col lg:ml-80">
         <StudentHeader
           user={user}
           avatarUrl={avatarUrl}
@@ -81,14 +75,12 @@ export default function StudentLayout() {
           setSidebarOpen={setSidebarOpen}
         />
 
-        {/* Main Content */}
-
-        <main className="flex-1 p-5 lg:p-8 pb-24 lg:pb-8 overflow-x-hidden">
-          <Outlet />
+        <main className="flex-1 overflow-x-hidden p-4 pb-24 sm:p-5 lg:p-8 lg:pb-8">
+          <div className="mx-auto w-full max-w-7xl">
+            <Outlet />
+          </div>
         </main>
       </div>
-
-      {/* Mobile Bottom Navigation */}
 
       <StudentMobileNav />
     </div>

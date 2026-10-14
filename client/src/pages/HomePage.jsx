@@ -40,180 +40,142 @@ const steps = [
 
 const HomePage = () => {
   return (
-    <div>
-      <section className="relative overflow-hidden flex flex-col lg:flex-row justify-between gap-10 pt-28 sm:pt-32 lg:pt-40 lg:pb-30 lg:px-70 px-5 sm:px-10 leading-10 m-auto">
-        {/* Video Background */}
-        <video
-          src={homevideo}
-          loop
-          muted
-          autoPlay
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0 filter brightness-70"
-        ></video>
+    <div className="w-full overflow-x-hidden">
+      <section className="relative overflow-hidden bg-slate-900">
+        <div className="mx-auto flex min-h-[70vh] max-w-7xl flex-col justify-center gap-10 px-4 py-20 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-28">
+          <video
+            src={homevideo}
+            loop
+            muted
+            autoPlay
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover brightness-70"
+          ></video>
 
-        {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-black/35 z-0"></div>
+          <div className="absolute inset-0 bg-black/35"></div>
 
-        {/**right ui,...................... */}
-        <div className="mt-10 lg:mt-30 flex-1 relative z-10">
-          <h4 className="bg-slate-700 w-fit p-2 rounded-full tracking-widest text-white font-semibold leading-relaxed text-xs inline-block mb-6">
-            RISK-FREE TRIAL AVAILABLE
-          </h4>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-10 text-white">
-            Find Your <br />
-            <em>
-              <span className="text-gray-400 ">Perfect</span>
-            </em>{" "}
-            Tutor.
-          </h1>
-          <p className="text-gray-100 text-lg sm:text-xl lg:text-2xl leading-relaxed">
-            Experience personalized learning designed to{" "}
-            <br className="hidden sm:block" /> help you master any subject with
-            confidence.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 mt-10 ">
-            <Link
-              to="/find-tutors"
-              className="hover:scale-105 transition-transform text-center bg-slate-900 rounded-2xl text-white px-8 sm:px-10 py-3 font-semibold cursor-pointer"
-            >
-              Find a Tutor
-            </Link>
-            <Link
-              to="/tutor-application"
-              className="hover:scale-105 transition-transform text-center bg-gray-300 rounded-2xl text-black px-8 sm:px-10 py-3 font-semibold cursor-pointer"
-            >
-              Become a Tutor
-            </Link>
-          </div>
-          <p className="font-extralight mt-10 text-sm sm:text-base text-gray-100">
-            <span className="font-semibold text-white">50,000+</span> students
-            trust TutorLink
-          </p>
-        </div>
-
-        {/**left/// ui,...................... */}
-        <div className="mt-10 lg:mt-30 flex-1 flex justify-center items-center relative z-10"></div>
-      </section>
-
-      <section className="bg-gray-200">
-        <div className="text-center leading-relaxed">
-          <h2 className="text-4xl font-semibold pt-10">Why TutorLink?</h2>
-          <p className="leading-relaxed p-2 text-md text-lg">
-            Everything you need for a world-class learning experience.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-10 m-5 sm:m-10 px-5 sm:px-10 lg:px-50 pb-10 sm:pb-20 lg:pb-30 mb-6 ">
-          {features.map((feature, index) => {
-            const getIcon = () => {
-              switch (feature.icon) {
-                case "shield":
-                  return (
-                    <ShieldCheck
-                      size={50}
-                      className="mb-4 bg-gray-300 p-1 rounded-xl hover:text-black"
-                    />
-                  );
-                case "calendar":
-                  return (
-                    <Calendar
-                      size={50}
-                      className="mb-4 bg-gray-300 p-1 rounded-xl"
-                    />
-                  );
-                case "card":
-                  return (
-                    <CreditCard
-                      size={50}
-                      className="mb-4 bg-gray-300 p-1 rounded-xl"
-                    />
-                  );
-                default:
-                  return <span>{feature.icon}</span>;
-              }
-            };
-
-            return (
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-2xl p-20 hover:bg-slate-900 duration-300 transition-all ease-in cursor-pointer text-slate-900 hover:text-white"
+          <div className="relative z-10 max-w-2xl">
+            <h4 className="mb-6 inline-block rounded-full bg-slate-700 px-3 py-2 text-[10px] font-semibold tracking-[0.2em] text-white uppercase sm:text-xs">
+              Risk-free trial available
+            </h4>
+            <h1 className="mb-6 text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-7xl">
+              Find Your <span className="text-gray-400">Perfect</span> Tutor.
+            </h1>
+            <p className="text-base leading-relaxed text-gray-100 sm:text-lg lg:text-2xl">
+              Experience personalized learning designed to help you master any subject with confidence.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/find-tutors"
+                className="rounded-2xl bg-slate-900 px-6 py-3 text-center font-semibold text-white transition hover:scale-[1.02] sm:px-8"
               >
-                {getIcon()}
-                <h2 className="text-3xl font-semibold">{feature.title}</h2>
-                <p className="text-xl leading-tight">{feature.desc}</p>
-              </div>
-            );
-          })}
+                Find a Tutor
+              </Link>
+              <Link
+                to="/tutor-application"
+                className="rounded-2xl bg-gray-300 px-6 py-3 text-center font-semibold text-black transition hover:scale-[1.02] sm:px-8"
+              >
+                Become a Tutor
+              </Link>
+            </div>
+            <p className="mt-8 text-sm text-gray-100 sm:text-base">
+              <span className="font-semibold text-white">50,000+</span> students trust TutorLink
+            </p>
+          </div>
+
+          <div className="relative z-10 hidden flex-1 lg:block" />
         </div>
       </section>
-      <section>
-        <div className="flex flex-col sm:flex-row justify-between px-5 sm:px-10 lg:px-60 py-10 sm:py-20 gap-5">
-          <div>
-            <h3 className="text-lg text-gray-900 tracking-widest uppercase leading-relaxed">
-              Featured Experts
-            </h3>
-            <h2 className="text-slate-900 font-semibold text-3xl sm:text-4xl leading-relaxed">
-              Learn from the Best
-            </h2>
+
+      <section className="bg-gray-200 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="text-center">
+            <h2 className="text-3xl font-semibold sm:text-4xl">Why TutorLink?</h2>
+            <p className="mt-3 text-base text-slate-700 sm:text-lg">
+              Everything you need for a world-class learning experience.
+            </p>
           </div>
-          <div>
-            <Link to="/find-tutors">
-              <a className="underline uppercase font-bold text-md" href="">
-                Explore All →
-              </a>
-            </Link>
+
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => {
+              const getIcon = () => {
+                switch (feature.icon) {
+                  case "shield":
+                    return <ShieldCheck size={40} className="mb-4 rounded-xl bg-gray-300 p-2" />;
+                  case "calendar":
+                    return <Calendar size={40} className="mb-4 rounded-xl bg-gray-300 p-2" />;
+                  case "card":
+                    return <CreditCard size={40} className="mb-4 rounded-xl bg-gray-300 p-2" />;
+                  default:
+                    return <span>{feature.icon}</span>;
+                }
+              };
+
+              return (
+                <div
+                  key={index}
+                  className="rounded-2xl bg-white p-6 shadow-xl transition duration-300 hover:bg-slate-900 hover:text-white sm:p-8"
+                >
+                  {getIcon()}
+                  <h2 className="text-2xl font-semibold sm:text-3xl">{feature.title}</h2>
+                  <p className="mt-3 text-base leading-relaxed sm:text-lg">{feature.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section className="py-12 sm:py-24 md:py-32 bg-slate-900 text-white">
-        <div className="text-center leading-relaxed px-5">
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-4">
-            Master Any Skill in 3 Steps
-          </h2>
-          <p className="text-slate-400 fixed-dim max-w-2xl mx-auto text-sm sm:text-base">
-            {" "}
-            Our streamlined process ensures you find the right match without the
-            stress.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 md:gap-16 relative px-5 sm:px-10">
-          <div className="hidden lg:block absolute top-10 left-[15%] right-[15%] h-0.5 bg-white/10" />
-          {steps.map((s) => (
-            <div key={s.n} className="relative z-10 text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl sm:text-3xl font-black shadow-2xl">
-                {s.n}
-              </div>
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3">
-                {s.title}
-              </h3>
-              <p className="text-primary-fixed-dim leading-relaxed text-sm sm:text-base">
-                {s.desc}
-              </p>
-            </div>
-          ))}
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-900">Featured Experts</h3>
+            <h2 className="mt-2 text-3xl font-semibold text-slate-900 sm:text-4xl">Learn from the Best</h2>
+          </div>
+          <Link to="/find-tutors" className="text-sm font-bold uppercase underline sm:text-base">
+            Explore All →
+          </Link>
         </div>
       </section>
-      {/**banner..................................... */}
-      <section>
-        <div className="bg-gray-300 p-5 sm:p-10 md:p-20 text-center relative overflow-hidden">
-          <div className="hidden md:block absolute top-0 right-0 md:w-56 md:h-56 bg-gray-400 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-black mb-6">
-            Ready to unlock your potential?
-          </h2>
-          <p className="text-gray-700 text-base sm:text-lg md:text-xl mb-10 max-w-2xl mx-auto px-5">
-            Join over 50,000 students who have improved their scores with
-            TutorLink.
-          </p>
-          <button>
+
+      <section className="bg-slate-900 py-12 text-white sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Master Any Skill in 3 Steps</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-400 sm:text-base">
+              Our streamlined process ensures you find the right match without the stress.
+            </p>
+          </div>
+          <div className="relative mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="absolute left-[15%] right-[15%] top-10 hidden h-0.5 bg-white/10 lg:block" />
+            {steps.map((s) => (
+              <div key={s.n} className="relative z-10 text-center">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gray-600 text-2xl font-black shadow-2xl sm:h-20 sm:w-20 sm:text-3xl">
+                  {s.n}
+                </div>
+                <h3 className="mb-3 text-xl font-bold sm:text-2xl">{s.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-300 sm:text-base">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-gray-300">
+        <div className="mx-auto max-w-5xl px-4 py-12 text-center sm:px-6 sm:py-16">
+          <div className="relative overflow-hidden rounded-3xl bg-gray-300 p-6 sm:p-10">
+            <div className="pointer-events-none absolute -right-10 top-0 hidden h-40 w-40 rounded-full bg-gray-400 md:block" />
+            <h2 className="text-3xl font-bold text-black sm:text-4xl lg:text-5xl">Ready to unlock your potential?</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base text-gray-700 sm:text-lg">
+              Join over 50,000 students who have improved their scores with TutorLink.
+            </p>
             <Link
               to="/signup"
-              className="bg-slate-900 py-4 sm:py-6 px-8 sm:px-10 rounded-full text-white text-xl sm:text-2xl font-semibold cursor-pointer hover:scale-120 transition-transform all ease-in-out 0.4s"
+              className="mt-8 inline-block rounded-full bg-slate-900 px-8 py-4 text-lg font-semibold text-white transition hover:scale-[1.02] sm:px-10 sm:text-2xl"
             >
               Get Started Today
             </Link>
-          </button>
+          </div>
         </div>
       </section>
     </div>

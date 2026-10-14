@@ -215,7 +215,7 @@ export default function TutorDashboardPage() {
                       Approve Booking
                     </button>
                   )}
-                </div>pem
+                </div>
               </div>
             ))}
           </div>

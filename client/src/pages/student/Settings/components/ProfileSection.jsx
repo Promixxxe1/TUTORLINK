@@ -31,25 +31,31 @@ export default function ProfileSection() {
   }, [user]);
 
   const handleImage = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
-    // Preview immediately
-    setAvatar(URL.createObjectURL(file));
-
     try {
-      const res = await userAPI.updateAvatar(file);
+      const preview = URL.createObjectURL(file);
+      setAvatar(preview);
+
+      const response = await userAPI.updateAvatar(file);
+      const avatarUrl = response.data?.avatar || response.data?.user?.avatar;
+
+      if (!avatarUrl) {
+        throw new Error("No avatar URL returned from upload");
+      }
 
       const updatedUser = {
         ...user,
-        avatar: res.data.avatar,
+        avatar: avatarUrl,
       };
 
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
+      setAvatar(getAvatarUrl(updatedUser));
     } catch (err) {
       console.error(err);
-      alert("Failed to upload avatar");
+      alert(err.response?.data?.message || "Failed to upload avatar");
     }
   };
 

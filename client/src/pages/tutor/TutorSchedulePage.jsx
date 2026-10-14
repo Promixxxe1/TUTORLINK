@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { bookingAPI } from "../../services/api";
+import { getAvatarUrl } from "../../types";
 import { toast } from "react-toastify";
 
 const statusColors = {

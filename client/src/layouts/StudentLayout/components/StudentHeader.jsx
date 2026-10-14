@@ -9,64 +9,55 @@ export default function StudentHeader({
   setSidebarOpen,
 }) {
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-slate-200">
-      <div className="flex items-center justify-between px-5 lg:px-8 py-4">
-        {/* Left Side */}
-
-        <div className="flex items-center gap-4">
-          {/* Mobile Menu */}
-
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-8">
+        <div className="flex min-w-0 items-center gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden w-11 h-11 rounded-xl border border-slate-200 bg-white shadow-sm flex items-center justify-center hover:bg-slate-100 transition"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100 lg:hidden"
           >
             <Menu size={22} />
           </button>
 
-          <div className="hidden lg:flex flex-col">
+          <div className="hidden min-w-0 lg:flex lg:flex-col">
             <RefreshButton />
-            <p className="text-sm text-slate-500">Welcome back, {user?.name}</p>
+            <p className="truncate text-sm text-slate-500">
+              Welcome back, {user?.name}
+            </p>
           </div>
         </div>
 
-        {/* Right Side */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden sm:block">
+            <RefreshButton />
+          </div>
 
-        <div className="flex items-center gap-3">
-          {/* Refresh button */}
-          <RefreshButton />
-          {/* Search */}
-
-          <div className="hidden md:flex items-center bg-slate-100 rounded-2xl px-4 py-3 w-80">
+          <div className="hidden md:flex items-center w-56 rounded-2xl bg-slate-100 px-4 py-3 lg:w-80">
             <Search size={18} className="text-slate-400" />
-
             <input
               type="text"
               placeholder="Search lessons..."
-              className="ml-3 flex-1 bg-transparent outline-none text-sm placeholder:text-slate-400"
+              className="ml-3 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
             />
           </div>
 
-          {/* Notifications */}
-
           <NavLink
             to="/student/notifications"
-            className="relative w-11 h-11 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center hover:bg-slate-100 transition"
+            className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-100"
           >
             <Bell size={20} />
 
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+              <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             )}
           </NavLink>
 
-          {/* Avatar */}
-
           <img
             src={avatarUrl}
             alt={user?.name}
-            className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-md"
+            className="h-11 w-11 rounded-full border-2 border-white object-cover shadow-md"
           />
         </div>
       </div>

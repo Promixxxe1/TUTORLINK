@@ -71,8 +71,8 @@ const StudentDashboardPage = () => {
     .slice(0, 5);
 
   return (
-    <div>
-      <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-8 lg:p-10 text-white">
+    <div className="w-full overflow-x-hidden">
+      <section className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 p-5 text-white sm:p-8 lg:p-10">
         {/* Decorative circles */}
 
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-cyan-500/20 blur-3xl" />
@@ -116,7 +116,7 @@ const StudentDashboardPage = () => {
 
           {/* Right */}
 
-          <div className="grid grid-cols-2 gap-5 lg:w-[340px]">
+          <div className="grid grid-cols-2 gap-5 sm:w-full lg:w-[340px]">
             <div className="rounded-3xl bg-white/10 backdrop-blur-xl p-6">
               <p className="text-sm text-slate-300">Upcoming</p>
 

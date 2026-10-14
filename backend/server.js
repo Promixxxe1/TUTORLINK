@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // MIDDLEWARES (must come first)
-app.use(express.json());
+app.use(express.json()); 
 app.use(cors());
 
 //Routes...................../

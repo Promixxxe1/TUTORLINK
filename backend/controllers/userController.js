@@ -577,12 +577,12 @@ export const uploadAvatar = async (req, res) => {
       },
     });
   } catch (error) {
-   console.error("Avatar upload failed:", {
-     message: error.message,
-     http_code: error.http_code,
-     name: error.name,
-     stack: error.stack,
-   });
+    console.error("Avatar upload failed:", {
+      message: error.message,
+      http_code: error.http_code,
+      name: error.name,
+      stack: error.stack,
+    });
     res.status(500).json({
       message: error.message || "Avatar upload failed",
     });

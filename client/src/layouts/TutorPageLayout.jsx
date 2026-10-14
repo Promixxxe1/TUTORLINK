@@ -114,6 +114,25 @@ export default function TutorLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [studentCount, setStudentCount] = useState(0);
   const [avgRating, setAvgRating] = useState("0.0");
+  const [isCompact, setIsCompact] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      if (currentY > lastScrollY && currentY > 24) {
+        setIsCompact(true);
+      } else if (currentY < lastScrollY) {
+        setIsCompact(false);
+      }
+
+      setLastScrollY(currentY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   useEffect(() => {
     const fetchTutorStats = async () => {
@@ -189,7 +208,7 @@ export default function TutorLayout() {
       {/* ================= Sidebar ================= */}
 
       <aside
-        className={`fixed left-0 top-0 h-screen w-80 bg-white border-r border-slate-200 flex flex-col shadow-xl z-50 transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-[85vw] max-w-[320px] flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-300 sm:w-80 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -270,10 +289,10 @@ export default function TutorLayout() {
           ))}
         </div>
 
-        <div className="p-5 border-t border-slate-200">
+        <div className="border-t border-slate-200 p-5 pb-8">
           <button
             onClick={handleLogout}
-            className="w-full rounded-2xl py-4 bg-red-50 hover:bg-red-500 text-red-600 hover:text-white transition flex items-center justify-center gap-3 font-semibold"
+            className="flex w-full items-center justify-center gap-3 rounded-2xl bg-red-50 py-4 font-semibold text-red-600 transition hover:bg-red-500 hover:text-white"
           >
             <LogOut size={20} />
             Logout
@@ -286,68 +305,58 @@ export default function TutorLayout() {
       <div className="flex-1 lg:ml-80 flex flex-col min-h-screen">
         {/* ================= Header ================= */}
 
-        <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200">
-          <div className="flex items-center justify-between px-5 lg:px-8 py-4">
-            {/* Left */}
-
-            <div className="flex items-center gap-4">
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-8">
+            <div className="flex min-w-0 items-center gap-3">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden w-11 h-11 rounded-xl border border-slate-200 bg-white flex items-center justify-center"
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white lg:hidden"
               >
                 <Menu size={22} />
               </button>
 
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">
+              <div className="min-w-0">
+                <h1 className="truncate text-lg font-bold text-slate-900 sm:text-xl lg:text-2xl">
                   Welcome back,
                   <span className="text-blue-600"> {user?.name}</span>
                 </h1>
 
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="mt-1 hidden text-sm text-slate-500 sm:block">
                   Manage your students, schedule and earnings.
                 </p>
               </div>
             </div>
 
-            {/* Right */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:block">
+                <RefreshButton />
+              </div>
 
-            <div className="flex items-center gap-4">
-              {/* Refresh button */}
-              <RefreshButton />
-              {/* Search */}
-
-              <div className="hidden md:flex items-center bg-slate-100 rounded-2xl px-4 py-3 w-80">
+              <div className="hidden md:flex items-center w-56 rounded-2xl bg-slate-100 px-4 py-3 lg:w-80">
                 <Search size={18} className="text-slate-400" />
-
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="bg-transparent outline-none ml-3 flex-1 text-sm"
+                  className="ml-3 flex-1 bg-transparent text-sm outline-none"
                 />
               </div>
 
-              {/* Notification */}
-
               <NavLink
                 to="/tutor/notifications"
-                className="relative w-11 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition"
+                className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 transition hover:bg-slate-200"
               >
                 <Bell size={20} />
-
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1">
+                  <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
                     {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 )}
               </NavLink>
 
-              {/* Avatar */}
-
               <img
                 src={avatarUrl}
                 alt={user?.name}
-                className="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-lg"
+                className="h-11 w-11 rounded-2xl border-2 border-white object-cover shadow-lg"
               />
             </div>
           </div>
@@ -355,37 +364,47 @@ export default function TutorLayout() {
 
         {/* ================= Page ================= */}
 
-        <main className="flex-1 p-5 lg:p-8 pb-28 lg:pb-8 bg-slate-100 overflow-x-hidden">
-          <Outlet />
+        <main className="flex-1 overflow-x-hidden bg-slate-100 p-4 pb-28 sm:p-5 lg:p-8 lg:pb-8">
+          <div className="mx-auto w-full max-w-7xl">
+            <Outlet />
+          </div>
         </main>
       </div>
 
       {/* ================= Mobile Navigation ================= */}
 
-      <nav className="lg:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[94%] max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 flex justify-around py-3 z-50">
-        {mobileItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) =>
-              `flex flex-col items-center gap-1 transition ${
-                isActive ? "text-blue-600" : "text-slate-400"
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <div
-                  className={`p-2 rounded-xl ${isActive ? "bg-blue-100" : ""}`}
-                >
-                  {item.icon}
-                </div>
+      <nav className="fixed bottom-3 left-1/2 z-30 w-[94%] max-w-md -translate-x-1/2 transition-all duration-300 ease-out lg:hidden">
+        <div
+          className={`rounded-[1.5rem] border border-slate-200 bg-white/95 shadow-2xl backdrop-blur-xl transition-all duration-300 ${
+            isCompact ? "h-14" : "h-16"
+          }`}
+        >
+          <div className="grid h-full grid-cols-5">
+            {mobileItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex flex-col items-center justify-center gap-1 transition ${
+                    isActive ? "text-blue-600" : "text-slate-400"
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <div
+                      className={`rounded-xl p-2 ${isActive ? "bg-blue-100" : ""}`}
+                    >
+                      {item.icon}
+                    </div>
 
-                <span className="text-[11px] font-semibold">{item.label}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
+                    <span className="text-[10px] font-semibold sm:text-[11px]">{item.label}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </div>
+        </div>
       </nav>
     </div>
   );

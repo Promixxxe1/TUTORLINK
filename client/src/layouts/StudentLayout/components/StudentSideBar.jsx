@@ -97,7 +97,7 @@ export default function StudentSideBar({
       {/* Sidebar */}
 
       <aside
-        className={`fixed left-0 top-0 h-screen w-80 bg-[#071320] border-r border-slate-800 flex flex-col z-50 transition-transform duration-300 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-[85vw] max-w-[320px] flex-col border-r border-slate-800 bg-[#071320] transition-transform duration-300 sm:w-80 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -134,13 +134,13 @@ export default function StudentSideBar({
               <img
                 src={avatarUrl}
                 alt={user?.name}
-                className="w-16 h-16 rounded-2xl object-cover ring-4 ring-cyan-500/20"
+                className="h-16 w-16 rounded-2xl object-cover ring-4 ring-cyan-500/20"
               />
 
               <div className="min-w-0">
-                <h3 className="text-white font-bold truncate">{user?.name}</h3>
+                <h3 className="truncate text-white font-bold">{user?.name}</h3>
 
-                <p className="text-cyan-400 text-sm">Student Account</p>
+                <p className="text-sm text-cyan-400">Student Account</p>
               </div>
             </div>
 
@@ -185,7 +185,7 @@ export default function StudentSideBar({
 
         {/* Bottom Buttons */}
 
-        <div className="p-6 border-t border-slate-800">
+        <div className="border-t border-slate-800 p-6 pb-8">
           <NavLink
             to="/find-tutors"
             className="flex items-center justify-center gap-3 w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-4 font-bold text-white hover:scale-[1.02] transition"
@@ -196,7 +196,7 @@ export default function StudentSideBar({
 
           <button
             onClick={logout}
-            className="w-full mt-4 rounded-2xl border border-slate-700 py-4 text-slate-300 hover:bg-red-500 hover:border-red-500 hover:text-white transition flex items-center justify-center gap-3"
+            className="mt-4 flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 py-4 text-slate-300 transition hover:border-red-500 hover:bg-red-500 hover:text-white"
           >
             <LogOut size={20} />
             Logout

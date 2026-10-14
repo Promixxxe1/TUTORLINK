@@ -37,42 +37,37 @@ const values = [
 
 const AboutUsPage = () => {
   return (
-    <section className="pt-28">
-      <div className="flex flex-col lg:flex-row justify-between gap-10 lg:py-30 lg:px-70 px-5 sm:px-10 leading-10 mb-10 m-auto ">
-        {/**left ui//////....... */}
+    <section className="w-full overflow-x-hidden pt-28">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-6 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-12">
         <div>
-          <span className="bg-gray-400 w-fit p-2 rounded-full tracking-widest text-white font-semibold leading-relaxed text-xs inline-block mb-6">
-            OUR IDENTITY
+          <span className="mb-6 inline-block rounded-full bg-gray-400 px-3 py-2 text-[10px] font-semibold tracking-[0.2em] text-white uppercase sm:text-xs">
+            Our Identity
           </span>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-10 ">
-            Crafting the Future of{" "}
-            <span className="text-gray-700">Knowledge</span>
+          <h1 className="mb-6 text-4xl font-bold sm:text-5xl lg:text-7xl">
+            Crafting the Future of <span className="text-gray-700">Knowledge</span>
           </h1>
-          <p className="text-gray-700 text-lg sm:text-xl lg:text-2xl leading-relaxed">
-            TutorLink is more than a marketplace. It's a digital atelier where
-            academic mastery meets personalized apprenticeship, fostering a
-            global community of lifelong learners.
+          <p className="text-base leading-relaxed text-gray-700 sm:text-lg lg:text-2xl">
+            TutorLink is more than a marketplace. It&apos;s a digital atelier where academic mastery meets personalized apprenticeship, fostering a global community of lifelong learners.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 mt-10 ">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-5">
             <Link
               to="/find-tutors"
-              className="hover:scale-105 transition-transform text-center bg-slate-900 rounded-2xl text-white px-8 sm:px-10 py-3 font-semibold cursor-pointer"
+              className="rounded-2xl bg-slate-900 px-6 py-3 text-center font-semibold text-white transition hover:scale-[1.02] sm:px-8"
             >
               Find a Tutor
             </Link>
             <Link
               to="/tutor-application"
-              className="hover:scale-105 transition-transform text-center bg-gray-300 rounded-2xl text-black px-8 sm:px-10 py-3 font-semibold cursor-pointer"
+              className="rounded-2xl bg-gray-300 px-6 py-3 text-center font-semibold text-black transition hover:scale-[1.02] sm:px-8"
             >
               Become a Tutor
             </Link>
           </div>
         </div>
 
-        {/**right ui........*/}
         <div>
           <img
-            className="rounded-2xl w-500 object-cover"
+            className="w-full rounded-2xl object-cover shadow-xl"
             src={aboutUsImage}
             alt="Tutors collaborating and learning"
           />
@@ -95,24 +90,20 @@ const AboutUsPage = () => {
       </section>
 
       {/** Mission and Vision */}
-      <section className="py-24 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="flex flex-col lg:flex-row gap-16 items-start">
-            <div className="lg:sticky lg:top-24 w-full lg:w-1/3">
-              <h2 className="text-4xl font-bold tracking-tight text-primary mb-4">
+      <section className="bg-white py-16 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+            <div className="w-full lg:sticky lg:top-24 lg:w-1/3">
+              <h2 className="mb-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                 Our Mission
               </h2>
-              <div className="h-1.5 w-12 bg-gray-700 rounded-full" />
+              <div className="h-1.5 w-12 rounded-full bg-gray-700" />
             </div>
-            <div className="w-full lg:w-2/3 space-y-8">
-              <p className="text-3xl text-slate-900 leading-tight">
-                To democratize access to elite mentorship, bridging the gap
-                between passive learning and{" "}
-                <span className="text-gray-700 font-semibold">
-                  active intellectual growth.
-                </span>
+            <div className="w-full space-y-8 lg:w-2/3">
+              <p className="text-2xl leading-tight text-slate-900 sm:text-3xl">
+                To democratize access to elite mentorship, bridging the gap between passive learning and <span className="font-semibold text-gray-700">active intellectual growth.</span>
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {[
                   {
                     icon: <Sparkles className="w-8 h-8" />,
@@ -147,36 +138,33 @@ const AboutUsPage = () => {
       </section>
 
       {/* story.... */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
         <video
           src={heroVideo}
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-black/40"></div>
-        <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
-          <div className="mb-12">
-            <h2 className="text-4xl font-bold tracking-tight text-white mb-4">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 max-w-2xl">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               The TutorLink Story
             </h2>
-            <p className="text-lg text-gray-200 font-semibold max-w-2xl">
-              Founded in 2024, our journey began with a simple observation: the
-              digital classroom was missing a human soul.
+            <p className="text-base font-semibold text-gray-200 sm:text-lg">
+              Founded in 2024, our journey began with a simple observation: the digital classroom was missing a human soul.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className=" text-white rounded-3xl p-10 flex flex-col justify-center space-y-6">
-              <h4 className="text-6xl font-black text-white/80">50k+</h4>
-              <p className="text-xl font-medium text-white/70">
-                Hours of mentorship delivered across 40 countries in our first
-                year.
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="flex flex-col justify-center space-y-6 rounded-3xl p-6 text-white sm:p-10">
+              <h4 className="text-5xl font-black text-white/80 sm:text-6xl">50k+</h4>
+              <p className="text-lg font-medium text-white/70 sm:text-xl">
+                Hours of mentorship delivered across 40 countries in our first year.
               </p>
-              <blockquote className="border-l-4 border-secondary pl-4 text-slate-300 italic">
-                "We didn't want to build another app. We wanted to build a
-                legacy of academic empowerment."
+              <blockquote className="border-l-4 border-slate-400 pl-4 text-slate-200 italic">
+                &ldquo;We didn&apos;t want to build another app. We wanted to build a legacy of academic empowerment.&rdquo;
               </blockquote>
             </div>
           </div>
@@ -184,37 +172,29 @@ const AboutUsPage = () => {
       </section>
 
       {/* value......... */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-4">
+      <section className="py-16 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center sm:mb-16">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
               Our Core Values
             </h2>
-            <p className="text-gray-700 text-lg font-medium">
+            <p className="text-base font-medium text-gray-700 sm:text-lg">
               The principles that guide every interaction on our platform.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {values.map((values, index) => (
               <div
                 key={values.title}
-                className={`relative group ${index === 1 ? "md:mt-8" : ""} ${index === 2 ? "md:mt-16" : ""} `}
+                className={`group relative ${index === 1 ? "md:mt-8" : ""} ${index === 2 ? "md:mt-16" : ""}`}
               >
-                <div className="bg-white p-10 rounded-[2rem] shadow-xl border border-gray-300 group-hover:shadow-lg transition-all duration-300 h-full hover:translate-y-10">
-                  <div
-                    className={`w-16 h-16 ${values.color} rounded-2xl flex items-center justify-center mb-8`}
-                  >
-                    <span className="material-symbols-outlined text-3xl">
-                      {values.icon}
-                    </span>
+                <div className="h-full rounded-4xl border border-gray-300 bg-white p-6 shadow-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-lg sm:p-10">
+                  <div className={`mb-8 flex h-16 w-16 items-center justify-center rounded-2xl ${values.color}`}>
+                    <span className="text-3xl">{values.icon}</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-primary mb-4">
-                    {values.title}
-                  </h3>
-                  <p className="text-on-surface-variant leading-relaxed">
-                    {values.desc}
-                  </p>
+                  <h3 className="mb-4 text-2xl font-bold text-slate-900">{values.title}</h3>
+                  <p className="leading-relaxed text-slate-700">{values.desc}</p>
                 </div>
               </div>
             ))}
